@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface VenueRepository extends MongoRepository<Venue,Long> {
-    Venue findByEventId(Long eventId);
-    void deleteByEventId(Long eventId);
+public interface VenueRepository extends MongoRepository<Venue,String> {
+    Venue findByEventId(String eventId);
+    void deleteByEventId(String eventId);
 }

@@ -21,11 +21,11 @@ public class ExpenseService {
         Expense savedExpense = expenseRepository.save(expense);
         return expenseRepository.save(savedExpense);
     }
-    public List<Expense> getExpensesByEvent(Long eventId) {
+    public List<Expense> getExpensesByEvent(String eventId) {
         return expenseRepository.findByEventId(eventId);
     }
 
-    public List<Expense> getExpensesByVendor(Long vendorId) {
+    public List<Expense> getExpensesByVendor(String vendorId) {
         return expenseRepository.findByVendorId(vendorId);
     }
 

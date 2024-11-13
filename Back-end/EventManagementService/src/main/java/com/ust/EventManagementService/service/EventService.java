@@ -40,22 +40,29 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public List<Guest> getGuestListByEvent(Long eventId) {
+    public List<Guest> getGuestListByEvent(String eventId) {
         return guestClient.getGuestsByEventId(eventId);
     }
 
-    public List<Vendor> getVendorsByEventId(Long eventId){
+    public List<Vendor> getVendorsByEventId(String eventId){
         return vendorClient.getVendorsByEventId(eventId);
     }
 
-    public Venue getVenueByEventId(Long eventId) { return venueClient.getVenueByEventId(eventId); }
+    public Venue getVenueByEventId(String eventId) { return venueClient.getVenueByEventId(eventId); }
 
-    public void deleteVenueByEventId(Long eventId) {
+    public void deleteVenueByEventId(String eventId) {
         venueClient.deleteVenueByEventId(eventId);
     }
 
-    public List<Expenses> getExpensesByEvent(Long eventId) {
+    public List<Expenses> getExpensesByEvent(String eventId) {
         return expensesClient.getExpensesByEvent(eventId);
     }
 
+    public Event getEventById(String eventId) {
+        return eventRepository.findById(eventId).orElse(null);
+    }
+
+    public void deleteEvent(String eventId) {
+        eventRepository.deleteById(eventId);
+    }
 }

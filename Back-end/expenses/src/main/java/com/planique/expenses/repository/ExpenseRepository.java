@@ -5,9 +5,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface ExpenseRepository extends MongoRepository<Expense,Long> {
-    List<Expense> findByEventId(Long eventId);
-    List<Expense> findByVendorId(Long vendorId);
+public interface ExpenseRepository extends MongoRepository<Expense,String> {
+    List<Expense> findByEventId(String eventId);
+    List<Expense> findByVendorId(String vendorId);
     List<Expense> findByExpenseCategory(String expenseCategory);
     List<Expense> findByPaymentStatus(String paymentStatus);
     Expense findByInvoiceNumber(String invoiceNumber);

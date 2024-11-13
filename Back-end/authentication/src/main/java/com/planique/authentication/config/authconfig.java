@@ -44,4 +44,5 @@ public class authconfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
+    //hello
 }

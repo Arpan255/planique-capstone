@@ -16,11 +16,11 @@ import java.util.Date;
 @Document
 public class Expense {
     @Id
-    private Long expenseId;
+    private String expenseId;
     @NotBlank
-    private Long eventId;
+    private String eventId;
     @NotBlank
-    private Long vendorId;
+    private String vendorId;
     private String expenseDescription;
     private double TotalAmount;
     private LocalDate expenseDate;

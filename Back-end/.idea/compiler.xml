@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="EventManagementService" />
+        <module name="GuestManagementService" />
+        <module name="VenueManagementService" />
+        <module name="vendor" />
+        <module name="expenses" />
+        <module name="authentication" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="EventManagementService" options="-parameters" />
+      <module name="GuestManagementService" options="-parameters" />
+      <module name="VenueManagementService" options="-parameters" />
+      <module name="authentication" options="-parameters" />
+      <module name="expenses" options="-parameters" />
+      <module name="vendor" options="-parameters" />
+    </option>
+  </component>
+</project>

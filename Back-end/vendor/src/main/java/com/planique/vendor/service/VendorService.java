@@ -18,15 +18,15 @@ public class VendorService {
         return vendorRepository.save(vendor);
     }
 
-    public List<Vendor> getVendorsByEventId(Long eventId){
+    public List<Vendor> getVendorsByEventId(String eventId){
         return vendorRepository.findByEventId(eventId);
     }
 
-    public Optional<Vendor> getVendorById(Long vendorId){
+    public Optional<Vendor> getVendorById(String vendorId){
         return vendorRepository.findById(vendorId);
     }
 
-    public Vendor updateVendor(Long vendorId, Vendor updatedVendor){
+    public Vendor updateVendor(String vendorId, Vendor updatedVendor){
         Optional<Vendor> existingVendor = vendorRepository.findById(vendorId);
         if(existingVendor.isPresent()){
             Vendor vendor = existingVendor.get();
@@ -42,7 +42,7 @@ public class VendorService {
         return null;
     }
 
-    public void deleteVendor(Long vendorId){
+    public void deleteVendor(String vendorId){
         vendorRepository.deleteById(vendorId);
     }
 }

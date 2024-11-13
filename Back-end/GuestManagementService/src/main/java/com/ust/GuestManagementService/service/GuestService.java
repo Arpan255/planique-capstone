@@ -16,7 +16,7 @@ public class GuestService {
         return guestRepository.save(guest);
     }
 
-    public List<Guest> getGuestsByEventId(Long eventRef) {
-        return guestRepository.findByEventRef(eventRef);
+    public List<Guest> getGuestsByEventId(String eventId) {
+        return guestRepository.findByEventId(eventId);
     }
 }

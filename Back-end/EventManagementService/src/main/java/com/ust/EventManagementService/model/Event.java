@@ -18,7 +18,7 @@ import java.util.Date;
 public class Event {
     @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventId;
+    private String eventId;
     private String username;
     private String name;
     private String description;

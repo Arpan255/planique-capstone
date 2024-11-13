@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/venue")
+@CrossOrigin(origins = "http://localhost:5173")
 public class VenueController {
 
     @Autowired
@@ -24,7 +25,7 @@ public class VenueController {
     }
 
     @PutMapping("/updateVenue/{eventId}")
-    public ResponseEntity<Venue> updateVenue(@PathVariable Long eventId, @RequestBody Venue updatedVenue) {
+    public ResponseEntity<Venue> updateVenue(@PathVariable String eventId, @RequestBody Venue updatedVenue) {
         Venue existingVenue = venueService.getVenueByEventId(eventId);
 
         if (existingVenue != null) {
@@ -46,12 +47,12 @@ public class VenueController {
         }
     }
     @GetMapping("/event/{eventId}")
-    public Venue getVenueByEventId(@PathVariable Long eventId) {
+    public Venue getVenueByEventId(@PathVariable String eventId) {
         return venueService.getVenueByEventId(eventId);
     }
 
     @GetMapping("/showVenueDetail")
-    public ResponseEntity<Venue> showVenueDetail(@RequestParam Long eventId) {
+    public ResponseEntity<Venue> showVenueDetail(@RequestParam String eventId) {
         Venue venue = venueService.getVenueByEventId(eventId);
 
         if (venue != null) {
@@ -61,7 +62,7 @@ public class VenueController {
         }
     }
     @DeleteMapping("/delete/{eventId}")
-    public ResponseEntity<Void> deleteVenueByEventId(@PathVariable Long eventId) {
+    public ResponseEntity<Void> deleteVenueByEventId(@PathVariable String eventId) {
         venueService.deleteVenueByEventId(eventId);
         return ResponseEntity.noContent().build();
     }

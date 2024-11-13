@@ -10,6 +10,6 @@ import java.util.List;
 @FeignClient(name="expenses",url="http://localhost:9095")
 public interface ExpensesClient {
     @GetMapping("/api/expenses/events/{eventId}")
-    List<Expenses> getExpensesByEvent(@PathVariable Long eventId);
+    List<Expenses> getExpensesByEvent(@PathVariable String eventId);
 }
 

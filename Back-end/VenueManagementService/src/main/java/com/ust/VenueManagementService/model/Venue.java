@@ -12,8 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 public class Venue {
     @Id
-    private Long venueId;
-    private Long eventId;
+    private String venueId;
+    private String eventId;
     private String name;
     private String address;
     private String owner;

@@ -17,22 +17,16 @@ public class VenueService {
 
 
     // Predefined venues
-    @Getter
-    private final List<Venue> predefinedVenues = Arrays.asList(
-            new Venue(1L, null, "Venue A", "Address A", "Owner A", "1234567890", "a@example.com", 5000.0, "Notes A"),
-            new Venue(2L, null, "Venue B", "Address B", "Owner B", "0987654321", "b@example.com", 4000.0, "Notes B")
-            // Add more predefined venues as needed
-    );
 
     public Venue saveVenue(Venue venue) {
         return venueRepository.save(venue);
     }
 
-    public Venue getVenueByEventId(Long eventId) {
+    public Venue getVenueByEventId(String eventId) {
         return venueRepository.findByEventId(eventId);
     }
 
-    public void deleteVenueByEventId(Long eventId) {
+    public void deleteVenueByEventId(String eventId) {
         venueRepository.deleteByEventId(eventId);
     }
 

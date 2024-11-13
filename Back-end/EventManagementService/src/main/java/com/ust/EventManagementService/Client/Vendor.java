@@ -9,8 +9,8 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @Data
 public class Vendor {
-    private long vendorId;
-    private long eventId;
+    private String vendorId;
+    private String eventId;
     private String vendorCompanyName;
     private String vendorServiceType;
     private String vendorName;

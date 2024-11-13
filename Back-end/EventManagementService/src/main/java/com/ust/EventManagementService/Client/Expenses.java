@@ -10,9 +10,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 public class Expenses {
-    private Long expenseId;
-    private Long eventId;
-    private Long vendorId;
+    private String expenseId;
+    private String eventId;
+    private String vendorId;
     private String expenseDescription;
     private double TotalAmount;
     private LocalDate expenseDate;

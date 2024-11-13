@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/event")
+@CrossOrigin(origins = "http://localhost:5173")
 public class EventController {
     @Autowired
     private EventService eventService;
@@ -28,32 +29,47 @@ public class EventController {
         List<Event> events = eventService.showAllEvents();
         return ResponseEntity.ok(events);
     }
+    @GetMapping("/{eventId}")
+    public ResponseEntity<Event> getEventById(@PathVariable String eventId) {
+        Event event = eventService.getEventById(eventId);
+        return ResponseEntity.ok(event);
+    }
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable String eventId) {
+        Event event = eventService.getEventById(eventId);
+        if (event != null) {
+            eventService.deleteEvent(eventId);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @GetMapping("/{eventId}/guests")
-    public ResponseEntity<List<Guest>> getGuestListByEvent(@PathVariable Long eventId) {
+    public ResponseEntity<List<Guest>> getGuestListByEvent(@PathVariable String eventId) {
         List<Guest> guests = eventService.getGuestListByEvent(eventId);
         return ResponseEntity.ok(guests);
     }
 
     @GetMapping("/vendors/{eventId}")
-    public ResponseEntity<List<Vendor>> getVendorsByEventId(@PathVariable Long eventId){
+    public ResponseEntity<List<Vendor>> getVendorsByEventId(@PathVariable String eventId){
         List<Vendor> vendors = eventService.getVendorsByEventId(eventId);
         return ResponseEntity.ok(vendors);
     }
 
     @GetMapping("/event/{eventId}")
-    public Venue getVenueByEventId(@PathVariable Long eventId) {
+    public Venue getVenueByEventId(@PathVariable String eventId) {
         return eventService.getVenueByEventId(eventId);
     }
 
     @DeleteMapping("/delete/{eventId}")
-    public ResponseEntity<Void> deleteVenueByEventId(@PathVariable Long eventId) {
+    public ResponseEntity<Void> deleteVenueByEventId(@PathVariable String eventId) {
         eventService.deleteVenueByEventId(eventId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/events/{eventId}")
-    public List<Expenses> getExpensesByEvent(@PathVariable Long eventId) {
+    public List<Expenses> getExpensesByEvent(@PathVariable String eventId) {
         return eventService.getExpensesByEvent(eventId);
     }
 

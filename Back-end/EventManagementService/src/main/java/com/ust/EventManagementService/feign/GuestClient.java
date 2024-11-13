@@ -11,5 +11,5 @@ import java.util.List;
 public interface GuestClient {
 
         @GetMapping("/api/guests/event/{eventId}")
-        List<Guest> getGuestsByEventId(@PathVariable("eventId") Long eventId);
+        List<Guest> getGuestsByEventId(@PathVariable("eventId") String eventId);
     }

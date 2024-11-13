@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Venue {
-    private Long venueId;
-    private Long eventId;
+    private String venueId;
+    private String eventId;
     private String name;
     private String address;
     private String owner;

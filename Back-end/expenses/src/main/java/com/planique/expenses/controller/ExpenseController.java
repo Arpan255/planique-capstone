@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/expenses")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ExpenseController {
 
     @Autowired
@@ -26,12 +27,12 @@ public class ExpenseController {
     }
 
     @GetMapping("/events/{eventId}")
-    public List<Expense> getExpensesByEvent(@PathVariable Long eventId) {
+    public List<Expense> getExpensesByEvent(@PathVariable String eventId) {
         return expenseService.getExpensesByEvent(eventId);
     }
 
     @GetMapping("/vendor/{vendorId}")
-    public List<Expense> getExpensesByVendor(@PathVariable Long vendorId) {
+    public List<Expense> getExpensesByVendor(@PathVariable String vendorId) {
         return expenseService.getExpensesByVendor(vendorId);
     }
 

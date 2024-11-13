@@ -13,10 +13,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 //@Table(name = "guest")
 public class Guest {
     @Id
-    private Long id;
+    private String eventId;
     private String name;
     private String email;
     private String rsvpStatus;
     private String phone;
-    private Long eventRef;
 }

@@ -12,8 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Vendor {
     @Id
-    private long vendorId;
-    private long eventId;
+    private String vendorId;
+    private String eventId;
     private String vendorCompanyName;
     private String vendorServiceType;
     private String vendorName;

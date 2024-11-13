@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name="VenueManagementService", url="http://localhost:9093")
 public interface VenueClient {
     @GetMapping("/venue/event/{eventId}")
-    Venue getVenueByEventId(@PathVariable Long eventId);
+    Venue getVenueByEventId(@PathVariable String eventId);
 
     @DeleteMapping("/venue/delete/{eventId}")
-    ResponseEntity<Void> deleteVenueByEventId(@PathVariable Long eventId);
+    ResponseEntity<Void> deleteVenueByEventId(@PathVariable String eventId);
 }

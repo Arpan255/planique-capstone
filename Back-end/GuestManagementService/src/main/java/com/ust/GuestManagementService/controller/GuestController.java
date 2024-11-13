@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/guests")
+@CrossOrigin(origins = "http://localhost:5173")
 public class GuestController {
     @Autowired
     private GuestService guestService;
@@ -22,7 +23,7 @@ public class GuestController {
     }
 
     @GetMapping("/event/{eventId}")
-    public List<Guest> getGuestsByEventId(@PathVariable("eventId") Long eventId) {
+    public List<Guest> getGuestsByEventId(@PathVariable("eventId") String eventId) {
         return guestService.getGuestsByEventId(eventId);
     }
 }
