@@ -1,0 +1,205 @@
+/* Google Fonts import for Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Global styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Customizations */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f9fafb; /* Light background for a soft look */
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+/* Ensure root div takes full viewport height */
+html, body {
+  height: 100%;
+}
+
+/* Container */
+.container {
+  min-height: 100vh;
+}
+
+/* Gradient Background - Optional removal, set to white */
+.bg-gradient-to-r {
+  background-color: #f9fafb; /* Soft light background */
+}
+
+/* Form Box Styling */
+.bg-white {
+  background-color: #ffffff;
+}
+
+/* Box Shadow */
+.shadow-2xl {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* Softer shadow for better UI */
+}
+
+/* Hover Effects */
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out; /* Slightly slower transition */
+}
+
+/* Text Colors */
+.text-gray-800 {
+  color: #f2f4f7; /* Darker text color for better contrast */
+}
+
+.text-gray-700 {
+  color: #4a5568;
+}
+
+.text-gray-600 {
+  color: #718096;
+}
+
+.text-blue-500 {
+  color: #3b82f6;
+}
+
+.text-blue-600 {
+  color: #2563eb;
+}
+
+.text-red-500 {
+  color: #f87171;
+}
+
+/* Input Fields */
+input, textarea {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 8px; /* Rounded corners for inputs */
+  padding: 10px; /* Add padding inside inputs */
+  border: 2px solid #e2e8f0; /* Soft border for inputs */
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* Focus effects */
+}
+
+/* Typewriter Animation */
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.typing-animation {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 4px solid #3b82f6; /* Simulate cursor in blue */
+  width: 0;
+  animation: typewriter 3.5s steps(30) 1s forwards, blink-caret 0.75s step-end infinite;
+}
+
+@keyframes blink-caret {
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: #3b82f6;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background-color 0.3s, transform 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+  transform: scale(1.05);
+}
+
+.btn-secondary {
+  background-color: #fbbf24;
+  color: #2a3a8d;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background-color 0.3s, transform 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #facc15;
+  transform: scale(1.05);
+}
+
+/* Card Layout */
+.card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for cards */
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Links */
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #3b82f6;
+}
+
+/* Utility classes */
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .typing-animation {
+    animation: typewriter 3s steps(20) 1s forwards;
+  }
+
+  /* Adjust Button Size */
+  .btn-primary, .btn-secondary {
+    padding: 10px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 15px;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 8px 12px;
+  }
+}
