@@ -23,11 +23,15 @@ public class authconfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
-                .csrf(csrf->csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .headers((headers) -> headers.frameOptions((frame)->frame.sameOrigin()));
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()  // Allow open access to auth routes
+                        .anyRequest().authenticated()
+                )
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
         return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

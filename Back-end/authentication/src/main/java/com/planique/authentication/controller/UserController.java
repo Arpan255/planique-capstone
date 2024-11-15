@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -30,11 +30,13 @@ public class UserController {
 
     @PostMapping("/validate/user")
     public String getToken(@RequestBody Users user){
+        System.out.println("user: " + user.getName() + " " + user.getPassword());
         Authentication authentication=authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getName(),user.getPassword()));
         //System.out.println("user validated: " + authentication.isAuthenticated() );
         if(authentication.isAuthenticated()){
-            return userService.generateToken(user.getName());
+            System.out.println(userService.generateToken(user.getName()));
+            return "token";
         }
         return null;
     }

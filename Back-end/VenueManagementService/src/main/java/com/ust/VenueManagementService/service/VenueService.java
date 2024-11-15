@@ -30,4 +30,7 @@ public class VenueService {
         venueRepository.deleteByEventId(eventId);
     }
 
+    public List<Venue> getAllVenues() {
+        return venueRepository.findAll();
+    }
 }

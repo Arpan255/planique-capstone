@@ -23,6 +23,10 @@ public class VenueController {
         Venue savedVenue = venueService.saveVenue(venue);
         return ResponseEntity.ok(savedVenue);
     }
+    @GetMapping("/all")
+    public List<Venue> getAllVenues() {
+        return venueService.getAllVenues();
+    }
 
     @PutMapping("/updateVenue/{eventId}")
     public ResponseEntity<Venue> updateVenue(@PathVariable String eventId, @RequestBody Venue updatedVenue) {
