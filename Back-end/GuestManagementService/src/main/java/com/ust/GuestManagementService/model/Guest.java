@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 //@Table(name = "guest")
 public class Guest {
     @Id
+    private String guestId;
     private String eventId;
     private String name;
     private String email;

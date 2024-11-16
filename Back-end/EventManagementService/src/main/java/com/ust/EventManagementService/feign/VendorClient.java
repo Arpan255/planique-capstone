@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name="vendor", url = "http://localhost:9092")
+@FeignClient(name="vendor", url = "http://localhost:9094")
 public interface VendorClient {
     @GetMapping("/api/vendors/vendors/{eventId}")
     List<Vendor> getVendorsByEventId(@PathVariable String eventId);

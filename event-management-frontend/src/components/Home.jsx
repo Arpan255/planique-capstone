@@ -35,7 +35,6 @@ const Home = () => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
     }, 3000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -56,29 +55,29 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 font-['Munich'] overflow-hidden">
-      <header ref={headerRef} className="fixed w-full bg-slate-900/90 backdrop-blur-md shadow-md z-50 h-16">
-        <div className="container mx-auto h-full px-6">
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black font-['Arial'] overflow-hidden">
+      <header ref={headerRef} className="fixed w-full bg-black/90 backdrop-blur-xl shadow-lg z-50 h-16 border-b border-teal-500/20 transition-all duration-300 hover:bg-black/95 hover:shadow-teal-500/20 hover:shadow-2xl hover:border-teal-400/30 group">
+        <div className="container mx-auto h-full px-8">
           <div className="flex items-center justify-between h-full">
-            <Link to="/" className="flex items-center space-x-2 group">
-              <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-lg flex items-center justify-center transform group-hover:rotate-6 transition-all duration-300">
-                <h1 className="text-xl font-black text-slate-900">P</h1>
+            <Link to="/" className="flex items-center space-x-3 group">
+              <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-all duration-500">
+                <h1 className="text-xl font-bold text-white">P</h1>
               </div>
-              <h1 className="text-xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">Planique</h1>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-500">Planique</h1>
             </Link>
-            <nav className="hidden md:flex items-center space-x-6">
-              <button onClick={scrollToTop} className="text-sm text-slate-300 hover:text-emerald-400 transition-colors duration-300 font-medium">
+            <nav className="hidden md:flex items-center space-x-8">
+              <button onClick={scrollToTop} className="text-sm text-gray-300 hover:text-teal-400 transition-all duration-300 font-medium hover:scale-110">
                 Home
               </button>
-              <Link to="/tutorials" className="text-sm text-slate-300 hover:text-emerald-400 transition-colors duration-300 font-medium">
+              <Link to="/tutorial" className="text-sm text-gray-300 hover:text-teal-400 transition-all duration-300 font-medium hover:scale-110">
                 Tutorials
               </Link>
             </nav>
-            <div className="flex items-center space-x-3">
-              <Link to="/login" className="px-3 py-1.5 text-sm text-slate-300 hover:text-emerald-400 font-medium transition-colors duration-300">
+            <div className="flex items-center space-x-4">
+              <Link to="/login" className="px-4 py-1.5 text-sm text-gray-300 hover:text-teal-400 font-medium border border-teal-500/30 rounded-lg hover:border-teal-500 transition-all duration-300 hover:scale-105">
                 Login
               </Link>
-              <Link to="/register" className="px-3 py-1.5 text-sm bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 rounded-lg font-medium hover:shadow-lg hover:scale-105 transition-all duration-300">
+              <Link to="/register" className="px-4 py-2 text-sm bg-gradient-to-br from-teal-500 to-emerald-500 text-white rounded-lg font-medium hover:shadow-xl hover:shadow-teal-500/20 hover:scale-105 transition-all duration-500">
                 Register
               </Link>
             </div>
@@ -86,50 +85,18 @@ const Home = () => {
         </div>
       </header>
       <main>
-        <section className="container-fluid px-0 py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
-            <div className="relative overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-all duration-500">
-              {carouselImages.map((image, index) => (
-                <img
-                  key={index}
-                  src={image}
-                  alt={`Slide ${index + 1}`}
-                  className={`w-full h-[600px] object-cover transition-all duration-700 ${
-                    index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105 absolute top-0 left-0'
-                  }`}
-                />
-              ))}
-              <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-4">
-                {carouselImages.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 transform hover:scale-125 ${
-                      index === currentSlide ? 'bg-emerald-400 scale-110' : 'bg-white/80'
-                    }`}
-                  />
-                ))}
-              </div>
-              <button onClick={prevSlide} className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 p-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button onClick={nextSlide} className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 p-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-            <div className="space-y-8 px-8">
-              <h2 className="text-7xl font-extrabold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent leading-tight tracking-tighter font-['Munich']">
+        <section className="relative min-h-screen flex items-center pt-16">
+          <div className="absolute inset-0 bg-gradient-to-br from-black/95 to-gray-900/95 z-10"></div>
+          <div className="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-20">
+            <div className="space-y-8">
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent leading-tight animate-pulse">
                 <Typewriter
                   text={welcomeText}
                   cursorColor="transparent"
                   typeSpeed={70}
                 />
               </h2>
-              <p className="text-2xl text-slate-300 leading-relaxed font-light">
+              <p className="text-lg text-gray-300 leading-relaxed">
                 <Typewriter
                   text={fullText}
                   cursorColor="transparent"
@@ -138,39 +105,55 @@ const Home = () => {
                 />
               </p>
               <Link to="/register">
-                <button className="group px-14 py-6 bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 rounded-xl text-xl font-bold hover:from-emerald-300 hover:to-teal-300 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
+                <button className="group px-8 py-3 bg-gradient-to-br from-teal-500 to-emerald-500 text-white rounded-lg text-base font-medium hover:shadow-xl hover:shadow-teal-500/20 transform hover:scale-110 transition-all duration-500">
                   Get Started
-                  <span className="inline-block ml-3 transform group-hover:translate-x-2 transition-transform duration-200">→</span>
+                  <span className="inline-block ml-2 transform group-hover:translate-x-2 transition-transform duration-300">→</span>
                 </button>
               </Link>
+            </div>
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-teal-500/20 transform hover:scale-[1.02] transition-all duration-700">
+              {carouselImages.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Slide ${index + 1}`}
+                  className={`w-full h-[500px] object-cover transition-opacity duration-1000 ${
+                    index === currentSlide ? 'opacity-100' : 'opacity-0 absolute top-0 left-0'
+                  }`}
+                  style={{transform: `scale(${index === currentSlide ? '1' : '1.1'})`}}
+                />
+              ))}
+              <div className="absolute bottom-6 left-0 right-0 flex justify-center space-x-3">
+                {carouselImages.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    className={`w-2 h-2 rounded-full transition-all duration-500 transform hover:scale-150 ${
+                      index === currentSlide ? 'bg-teal-400 scale-125' : 'bg-white/80'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        <section ref={featuresRef} className="py-32 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+        <section ref={featuresRef} className="py-24 bg-gradient-to-br from-black via-gray-900 to-black">
           <div className="container mx-auto px-8">
-            <h3 className="text-6xl font-extrabold text-center bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-24 tracking-tight font-['Munich']">Discover What Planique Can Do for You</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-              <div className="group p-10 bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 hover:bg-gradient-to-br hover:from-slate-800 hover:to-slate-700 border border-slate-700">
-                <img src={manageIcon} alt="Manage Icon" className="w-24 h-24 mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
-                <h4 className="text-2xl font-bold text-slate-100 mb-4">Create & Manage Events</h4>
-                <p className="text-slate-300 text-lg">Effortlessly create events and manage details all in one place.</p>
-              </div>
-              <div className="group p-10 bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 hover:bg-gradient-to-br hover:from-slate-800 hover:to-slate-700 border border-slate-700">
-                <img src={budgetIcon} alt="Budget Icon" className="w-24 h-24 mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
-                <h4 className="text-2xl font-bold text-slate-100 mb-4">Track Budgets & Vendors</h4>
-                <p className="text-slate-300 text-lg">Keep a close eye on budgets and easily manage vendor interactions.</p>
-              </div>
-              <div className="group p-10 bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 hover:bg-gradient-to-br hover:from-slate-800 hover:to-slate-700 border border-slate-700">
-                <img src={rsvpIcon} alt="RSVP Icon" className="w-24 h-24 mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
-                <h4 className="text-2xl font-bold text-slate-100 mb-4">RSVP & Guest Management</h4>
-                <p className="text-slate-300 text-lg">Organize guest lists and monitor RSVP statuses in real-time.</p>
-              </div>
-              <div className="group p-10 bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 hover:bg-gradient-to-br hover:from-slate-800 hover:to-slate-700 border border-slate-700">
-                <img src={invoiceIcon} alt="Invoice Icon" className="w-24 h-24 mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
-                <h4 className="text-2xl font-bold text-slate-100 mb-4">Generate Invoices & Reports</h4>
-                <p className="text-slate-300 text-lg">Efficiently generate and manage invoices and event reports.</p>
-              </div>
+            <h3 className="text-3xl font-bold text-center bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent mb-16">Discover What Planique Can Do for You</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                { icon: manageIcon, title: "Create & Manage Events", desc: "Effortlessly create events and manage details all in one place." },
+                { icon: budgetIcon, title: "Track Budgets & Vendors", desc: "Keep a close eye on budgets and easily manage vendor interactions." },
+                { icon: rsvpIcon, title: "RSVP & Guest Management", desc: "Organize guest lists and monitor RSVP statuses in real-time." },
+                { icon: invoiceIcon, title: "Generate Invoices & Reports", desc: "Efficiently generate and manage invoices and event reports." }
+              ].map((feature, index) => (
+                <div key={index} className="group p-6 bg-gray-900/50 backdrop-blur-xl rounded-xl shadow-lg hover:shadow-xl hover:shadow-teal-500/20 transition-all duration-500 hover:-translate-y-4 border border-teal-500/20 hover:border-teal-500/50">
+                  <img src={feature.icon} alt={feature.title} className="w-16 h-16 mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500" />
+                  <h4 className="text-lg font-bold text-teal-400 mb-2">{feature.title}</h4>
+                  <p className="text-gray-300 text-sm">{feature.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -182,6 +165,10 @@ const Home = () => {
         * {
           -ms-overflow-style: none;
           scrollbar-width: none;
+        }
+        @keyframes slide {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-100%); }
         }
       `}</style>
     </div>

@@ -59,7 +59,7 @@ function GoogleCalendar() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-600 to-indigo-600">
+    <div className="flex justify-center items-center min-h-screen ">
       <div className="bg-white p-8 rounded-xl shadow-2xl max-w-lg w-full">
         {session ? (
           <div>
