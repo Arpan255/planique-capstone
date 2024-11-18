@@ -18,7 +18,7 @@ const ViewEvents = () => {
       try {
         const token = localStorage.getItem('token');
 
-        const response = await fetch('http://localhost:9091/event/showEvents', {
+        const response = await fetch(`http://localhost:9091/event/showEvents/${username}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -61,7 +61,7 @@ const ViewEvents = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 font-['Munich']">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 font-['Arial']">
       <header className="fixed w-full bg-slate-900/90 backdrop-blur-md shadow-md z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -73,12 +73,20 @@ const ViewEvents = () => {
             </Link>
             <div>
               {username ? (
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg hover:scale-105 transition-all duration-300"
-                >
-                  Logout
-                </button>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => navigate(-1)}
+                    className="px-4 py-2 bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 rounded-lg font-medium hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  >
+                    Logout
+                  </button>
+                </div>
               ) : (
                 <>
                   <Link
@@ -120,7 +128,7 @@ const ViewEvents = () => {
                         <h3 className="text-xl font-semibold text-emerald-400">{event.name}</h3>
                         <p className="text-slate-300">{event.description}</p>
                         <p className="text-slate-400">Date: {new Date(event.date).toLocaleString()}</p>
-                        <p className="text-slate-400">Budget: ${event.budget}</p>
+                        <p className="text-slate-400">Budget: ₹{event.budget}</p>
                         <p className="text-slate-400">Status: {event.status}</p>
                       </div>
                       <button

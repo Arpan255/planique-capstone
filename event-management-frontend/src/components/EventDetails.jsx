@@ -18,6 +18,8 @@ const EventDetails = () => {
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [remainingBudget, setRemainingBudget] = useState(0);
+  const [serviceProviders, setServiceProviders] = useState([]);
+
   const [eventDetails, setEventDetails] = useState({
     name: '',
     description: '',
@@ -71,9 +73,66 @@ const EventDetails = () => {
   const [isEditingGuest, setIsEditingGuest] = useState(false);
   const [message, setMessage] = useState('');
 
+  useEffect(() => {
+    if (showExpenseModal) {
+      fetchVendorsAndVenue();
+    }
+  }, [showExpenseModal]);
+
+  const fetchVendorsAndVenue = async () => {
+    try {
+      // Fetch vendors
+      const vendorsResponse = await fetch(`http://localhost:9094/api/vendors/vendors/${eventId}`);
+      const vendorsData = await vendorsResponse.json();
+
+      // Fetch venue
+      const venueResponse = await fetch(`http://localhost:9093/venue/event/${eventId}`);
+      const venueData = await venueResponse.json();
+
+      // Transform venue data to match vendor structure
+      const venueAsProvider = venueData ? [{
+        vendorId: `venue_${venueData.venueId}`, // Prefix to distinguish from vendor IDs
+        vendorCompanyName: venueData.name,
+        vendorServiceType: 'VENUE',
+        vendorAmount: venueData.cost,
+        vendorPaymentStatus: 'PENDING' // You might want to add a payment status field to your venue model
+      }] : [];
+      const allProviders = [...vendorsData, ...venueAsProvider];
+      setServiceProviders(allProviders);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  // Modify the expense input change handler
+  const handleExpenseInputChange = (e) => {
+    const { name, value } = e.target;
+    
+    if (name === 'vendorId') {
+      const selectedProvider = serviceProviders.find(provider => 
+        provider.vendorId.toString() === value.toString()
+      );
+      
+      if (selectedProvider) {
+        setExpenseForm(prevForm => ({
+          ...prevForm,
+          vendorId: value,
+          totalAmount: selectedProvider.vendorAmount,
+          paymentStatus: selectedProvider.vendorPaymentStatus.toUpperCase(),
+          expenseCategory: selectedProvider.vendorServiceType.toUpperCase(),
+        }));
+      }
+    } else {
+      setExpenseForm(prevForm => ({
+        ...prevForm,
+        [name]: value,
+      }));
+    }
+  };
+
+
   const fetchVendors = async () => {
     try {
-
       const response = await fetch(`http://localhost:9094/api/vendors/vendors/${eventId}`);
       if (response.ok) {
         const data = await response.json();
@@ -496,13 +555,28 @@ const EventDetails = () => {
     });
   };
 
-  const handleExpenseInputChange = (e) => {
-    const { name, value } = e.target;
-    setExpenseForm((prevForm) => ({
-      ...prevForm,
-      [name]: value,
-    }));
-  };
+  // const handleExpenseInputChange = (e) => {
+  //   const { name, value } = e.target;
+    
+  //   // Special handling for vendor selection
+  //   if (name === 'vendorId') {
+  //     const selectedVendor = vendors.find(vendor => vendor.vendorId.toString() === value);
+  //     if (selectedVendor) {
+  //       setExpenseForm(prevForm => ({
+  //         ...prevForm,
+  //         vendorId: value,
+  //         totalAmount: selectedVendor.vendorAmount,
+  //         paymentStatus: selectedVendor.vendorPaymentStatus.toUpperCase(),
+  //         expenseCategory: selectedVendor.vendorServiceType.toUpperCase(),
+  //       }));
+  //     }
+  //   } else {
+  //     setExpenseForm(prevForm => ({
+  //       ...prevForm,
+  //       [name]: value,
+  //     }));
+  //   }
+  // };
   
   const addExpense = async () => {
     try {
@@ -563,13 +637,31 @@ const EventDetails = () => {
   useEffect(() => {
     fetchEventDetails();
   }, [eventId]);
+  
 
 
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+      <div className="flex justify-end gap-4 mb-4">
+        <button 
+          onClick={() => navigate(-1)}
+          className="px-4 py-2 bg-emerald-400 text-slate-900 rounded hover:bg-emerald-500 transition-colors"
+        >
+          Back
+        </button>
+        <button 
+          onClick={() => {
+            localStorage.removeItem('token');
+            navigate('/login');
+          }}
+          className="px-4 py-2 bg-rose-500 text-white rounded hover:bg-rose-600 transition-colors"
+        >
+          Logout
+        </button>
+      </div>
       <div className="mb-6 bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-6">
-        <h1 className="text-3xl font-bold text-emerald-400 mb-4">{eventDetails.name}</h1>
+        <h1 className="text-xl font-bold text-emerald-400 mb-4">{eventDetails.name}</h1>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <p className="text-slate-400 text-sm">Description</p>
@@ -593,9 +685,9 @@ const EventDetails = () => {
       </div>
       <div className="flex">
         {/* Left half - Other cards */}
-        <div className="w-1/2 grid grid-cols-2 gap-4 pr-2">
+        <div className="w-1/2 grid grid-cols-2 gap-4 pr-1">
           {/* Vendors Card */}
-          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 hover:shadow-lg transition-all duration-300">
+          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 hover:shadow-lg transition-all duration-300 max-h-fit">
             <h2 className="text-xl font-bold mb-2 text-emerald-400">Vendors</h2>
             {message && (
               <div className="bg-emerald-900/50 text-emerald-400 p-2 rounded mb-2">
@@ -613,7 +705,7 @@ const EventDetails = () => {
           </div>
 
           {/* Venue Card */}
-          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 hover:shadow-lg transition-all duration-300">
+          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 max-h-fit hover:shadow-lg transition-all duration-300">
             <h2 className="text-xl font-bold mb-2 text-emerald-400">Venue</h2>
             <div className="flex gap-2 mb-4">
               <button onClick={() => openVenueModal()} className="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 px-3 py-1 rounded hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm">
@@ -626,7 +718,7 @@ const EventDetails = () => {
           </div>
 
           {/* Guests Card */}
-          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 hover:shadow-lg transition-all duration-300">
+          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg max-h-fit shadow p-4 hover:shadow-lg transition-all duration-300">
             <h2 className="text-xl font-bold mb-2 text-emerald-400">Guests</h2>
             <div className="flex gap-2 mb-4">
               <button onClick={() => openGuestModal()} className="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 px-3 py-1 rounded hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm">
@@ -639,18 +731,18 @@ const EventDetails = () => {
           </div>
 
           {/* Budget Card */}
-          <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-2xl font-bold mb-4 text-emerald-400">Expenses</h2>
+          <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl max-h-fit shadow-lg p-4 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl font-bold mb-2 text-emerald-400">Expenses</h2>
             {message && (
               <div className="bg-emerald-900/50 text-emerald-400 p-3 rounded-lg mb-4">
                 {message}
               </div>
             )}
-            <div className="flex gap-4 mb-6">
-              <button onClick={() => openExpenseModal()} className="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 px-4 py-2 rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300">
+            <div className="flex gap-2 mb-4">
+              <button onClick={() => openExpenseModal()} className="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 px-3 py-1 rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm">
                 Create Expense
               </button>
-              <button onClick={handleViewExpenses} className="border border-emerald-400 text-emerald-400 px-4 py-2 rounded-lg hover:bg-emerald-400/10 transition-colors">
+              <button onClick={handleViewExpenses} className="border border-emerald-400 text-emerald-400 px-3 py-1 rounded-lg hover:bg-emerald-400/10 transition-colors text-sm">
                 View Expenses
               </button>
             </div>
@@ -693,15 +785,15 @@ const EventDetails = () => {
                   value={vendorForm.vendorServiceType}
                   onChange={handleInputChange}
                   required
-                  className="w-full bg-slate-700/50 border border-slate-600 rounded p-2 focus:ring-2 focus:ring-emerald-400 outline-none transition-all duration-300 text-slate-200"
+                  className="w-full bg-slate-800 border border-slate-600 rounded p-2 focus:ring-2 focus:ring-emerald-400 outline-none transition-all duration-300 text-slate-200"
                 >
-                  <option value="">Select Service Type</option>
-                  <option value="Catering">Catering</option>
-                  <option value="Photography">Photography</option>
-                  <option value="Decoration">Decoration</option>
-                  <option value="Music">Music</option>
-                  <option value="Transportation">Transportation</option>
-                  <option value="Other">Other</option>
+                  <option value="" className="bg-slate-800 text-slate-200">Select Service Type</option>
+                  <option value="Catering" className="bg-slate-800 text-slate-200">Catering</option>
+                  <option value="Photography" className="bg-slate-800 text-slate-200">Photography</option>
+                  <option value="Decoration" className="bg-slate-800 text-slate-200">Decoration</option>
+                  <option value="Music" className="bg-slate-800 text-slate-200">Music</option>
+                  <option value="Transportation" className="bg-slate-800 text-slate-200">Transportation</option>
+                  <option value="Other" className="bg-slate-800 text-slate-200">Other</option>
                 </select>
               </div>
       
@@ -745,7 +837,7 @@ const EventDetails = () => {
               </div>
       
               <div>
-                <label className="block text-slate-300 text-sm font-semibold mb-1">Amount ($)*</label>
+                <label className="block text-slate-300 text-sm font-semibold mb-1">Decided Amount</label>
                 <input
                   type="number"
                   name="vendorAmount"
@@ -767,11 +859,12 @@ const EventDetails = () => {
                   onChange={handleInputChange}
                   required
                   className="w-full bg-slate-700/50 border border-slate-600 rounded p-2 focus:ring-2 focus:ring-emerald-400 outline-none transition-all duration-300 text-slate-200"
+                  style={{backgroundColor: '#1e293b'}} // Darker background for better contrast
                 >
-                  <option value="">Select Status</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Partial">Partial</option>
-                  <option value="Completed">Completed</option>
+                  <option value="" className="bg-slate-800 text-slate-200">Select Status</option>
+                  <option value="Pending" className="bg-slate-800 text-slate-200">Pending</option>
+                  <option value="Partial" className="bg-slate-800 text-slate-200">Partial</option>
+                  <option value="Completed" className="bg-slate-800 text-slate-200">Completed</option>
                 </select>
               </div>
       
@@ -924,6 +1017,23 @@ const EventDetails = () => {
       </h2>
 
       <form onSubmit={handleExpenseSubmit} className="grid grid-cols-2 gap-6">
+      <div className="col-span-2">
+            <label className="block text-slate-300 text-sm font-semibold mb-2">Service Provider*</label>
+            <select
+              name="vendorId"
+              value={expenseForm.vendorId}
+              onChange={handleExpenseInputChange}
+              required
+              className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-emerald-400 outline-none transition-all duration-300 text-slate-200"
+            >
+              <option value="">Select Service Provider</option>
+              {serviceProviders.map((provider) => (
+                <option key={provider.vendorId} value={provider.vendorId}>
+                  {provider.vendorCompanyName} - {provider.vendorServiceType}
+                </option>
+              ))}
+            </select>
+          </div>
         <div className="col-span-2">
           <label className="block text-slate-300 text-sm font-semibold mb-2">Description*</label>
           <input
@@ -951,23 +1061,6 @@ const EventDetails = () => {
           />
         </div>
         <div>
-          <label className="block text-slate-300 text-sm font-semibold mb-2">Category*</label>
-          <select
-            name="expenseCategory"
-            value={expenseForm.expenseCategory}
-            onChange={handleExpenseInputChange}
-            required
-            className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-emerald-400 outline-none transition-all duration-300 text-slate-200"
-          >
-            <option value="">Select Category</option>
-            <option value="FOOD">Food</option>
-            <option value="TRAVEL">Travel</option>
-            <option value="ACCOMMODATION">Accommodation</option>
-            <option value="SUPPLIES">Supplies</option>
-            <option value="OTHER">Other</option>
-          </select>
-        </div>
-        <div>
           <label className="block text-slate-300 text-sm font-semibold mb-2">Payment Method*</label>
           <select
             name="expensePaymentMethod"
@@ -975,40 +1068,26 @@ const EventDetails = () => {
             onChange={handleExpenseInputChange}
             required
             className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-emerald-400 outline-none transition-all duration-300 text-slate-200"
+            style={{backgroundColor: '#1e293b'}} // Darker background for better contrast
           >
-            <option value="">Select Payment Method</option>
-            <option value="CASH">Cash</option>
-            <option value="CREDIT_CARD">Credit Card</option>
-            <option value="DEBIT_CARD">Debit Card</option>
-            <option value="BANK_TRANSFER">Bank Transfer</option>
+            <option value="" className="bg-slate-800 text-slate-200">Select Payment Method</option>
+            <option value="CASH" className="bg-slate-800 text-slate-200">Cash</option>
+            <option value="CARD" className="bg-slate-800 text-slate-200">Card</option>
+            <option value="UPI" className="bg-slate-800 text-slate-200">UPI</option>
+            <option value="BANK_TRANSFER" className="bg-slate-800 text-slate-200">Bank Transfer</option>
           </select>
         </div>
-        <div>
-          <label className="block text-slate-300 text-sm font-semibold mb-2">Payment Status*</label>
-          <select
-            name="paymentStatus"
-            value={expenseForm.paymentStatus}
-            onChange={handleExpenseInputChange}
-            required
-            className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-emerald-400 outline-none transition-all duration-300 text-slate-200"
-          >
-            <option value="">Select Status</option>
-            <option value="PAID">Paid</option>
-            <option value="PENDING">Pending</option>
-            <option value="CANCELLED">Cancelled</option>
-          </select>
-        </div>
-        <div>
+        {/* <div>
           <label className="block text-slate-300 text-sm font-semibold mb-2">Invoice Number</label>
           <input
             type="text"
             name="invoiceNumber"
-            value={expenseForm.invoiceNumber}
-            onChange={handleExpenseInputChange}
-            placeholder="Enter invoice number"
+            value={expenses.length + 1} // Auto-increment invoice number based on existing expenses
+            readOnly
             className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-emerald-400 outline-none transition-all duration-300 text-slate-200"
           />
-        </div>
+        </div> */}
+        
         <div className="col-span-2 flex gap-4 justify-end mt-6">
           <button
             type="button"
@@ -1080,12 +1159,11 @@ const EventDetails = () => {
                   name="rsvpStatus"
                   value={guestForm.rsvpStatus}
                   onChange={handleGuestInputChange}
-                  className="w-full bg-slate-700/50 border border-slate-600 rounded p-2 focus:ring-2 focus:ring-emerald-400 outline-none text-slate-200"
+                  className="w-full bg-slate-700 border border-slate-600 rounded p-2 focus:ring-2 focus:ring-emerald-400 outline-none text-white"
                 >
-                  <option value="">Select status</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Confirmed">Confirmed</option>
-                  <option value="Declined">Declined</option>
+                  <option value="" className="bg-slate-700 text-white">Select status</option>
+                  <option value="Pending" className="bg-slate-700 text-white">Pending</option>
+                  <option value="Confirmed" className="bg-slate-700 text-white">Confirmed</option>
                 </select>
               </div>
 

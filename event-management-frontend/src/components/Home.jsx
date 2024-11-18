@@ -55,29 +55,29 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black font-['Arial'] overflow-hidden">
-      <header ref={headerRef} className="fixed w-full bg-black/90 backdrop-blur-xl shadow-lg z-50 h-16 border-b border-teal-500/20 transition-all duration-300 hover:bg-black/95 hover:shadow-teal-500/20 hover:shadow-2xl hover:border-teal-400/30 group">
-        <div className="container mx-auto h-full px-8">
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black font-['Arial'] overflow-x-hidden">
+      <header ref={headerRef} className="fixed w-full bg-black/90 backdrop-blur-xl shadow-lg z-50 h-16 border-b border-teal-500/20 transition-all duration-300">
+        <div className="container mx-auto h-full px-4">
           <div className="flex items-center justify-between h-full">
-            <Link to="/" className="flex items-center space-x-3 group">
-              <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-all duration-500">
-                <h1 className="text-xl font-bold text-white">P</h1>
+            <Link to="/" onClick={scrollToTop} className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                <h1 className="text-lg font-bold text-white">P</h1>
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-500">Planique</h1>
+              <h1 className="text-lg font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Planique</h1>
             </Link>
-            <nav className="hidden md:flex items-center space-x-8">
-              <button onClick={scrollToTop} className="text-sm text-gray-300 hover:text-teal-400 transition-all duration-300 font-medium hover:scale-110">
+            <nav className="hidden md:flex items-center space-x-6">
+              <Link to="/" onClick={scrollToTop} className="text-sm text-teal-400 hover:text-teal-400 transition-all duration-300">
                 Home
-              </button>
-              <Link to="/tutorial" className="text-sm text-gray-300 hover:text-teal-400 transition-all duration-300 font-medium hover:scale-110">
+              </Link>
+              <Link to="/tutorial" className="text-sm text-teal-400 hover:text-teal-400 transition-all duration-300">
                 Tutorials
               </Link>
             </nav>
-            <div className="flex items-center space-x-4">
-              <Link to="/login" className="px-4 py-1.5 text-sm text-gray-300 hover:text-teal-400 font-medium border border-teal-500/30 rounded-lg hover:border-teal-500 transition-all duration-300 hover:scale-105">
+            <div className="flex items-center space-x-3">
+              <Link to="/login" className="px-4 py-1.5 text-sm text-gray-300 hover:text-teal-400 border border-teal-500/30 rounded-lg hover:border-teal-500 transition-all duration-300">
                 Login
               </Link>
-              <Link to="/register" className="px-4 py-2 text-sm bg-gradient-to-br from-teal-500 to-emerald-500 text-white rounded-lg font-medium hover:shadow-xl hover:shadow-teal-500/20 hover:scale-105 transition-all duration-500">
+              <Link to="/register" className="px-4 py-1.5 text-sm bg-gradient-to-br from-teal-500 to-emerald-500 text-white rounded-lg hover:shadow-lg transition-all duration-300">
                 Register
               </Link>
             </div>
@@ -87,16 +87,16 @@ const Home = () => {
       <main>
         <section className="relative min-h-screen flex items-center pt-16">
           <div className="absolute inset-0 bg-gradient-to-br from-black/95 to-gray-900/95 z-10"></div>
-          <div className="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-20">
-            <div className="space-y-8">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent leading-tight animate-pulse">
+          <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-20">
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent leading-tight">
                 <Typewriter
                   text={welcomeText}
                   cursorColor="transparent"
                   typeSpeed={70}
                 />
               </h2>
-              <p className="text-lg text-gray-300 leading-relaxed">
+              <p className="text-base text-gray-300 leading-relaxed">
                 <Typewriter
                   text={fullText}
                   cursorColor="transparent"
@@ -105,13 +105,13 @@ const Home = () => {
                 />
               </p>
               <Link to="/register">
-                <button className="group px-8 py-3 bg-gradient-to-br from-teal-500 to-emerald-500 text-white rounded-lg text-base font-medium hover:shadow-xl hover:shadow-teal-500/20 transform hover:scale-110 transition-all duration-500">
+                <button className="px-8 py-3 bg-gradient-to-br from-teal-500 to-emerald-500 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300">
                   Get Started
-                  <span className="inline-block ml-2 transform group-hover:translate-x-2 transition-transform duration-300">→</span>
+                  <span className="inline-block ml-2">→</span>
                 </button>
               </Link>
             </div>
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-teal-500/20 transform hover:scale-[1.02] transition-all duration-700">
+            <div className="relative overflow-hidden rounded-xl shadow-lg">
               {carouselImages.map((image, index) => (
                 <img
                   key={index}
@@ -123,13 +123,13 @@ const Home = () => {
                   style={{transform: `scale(${index === currentSlide ? '1' : '1.1'})`}}
                 />
               ))}
-              <div className="absolute bottom-6 left-0 right-0 flex justify-center space-x-3">
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
                 {carouselImages.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`w-2 h-2 rounded-full transition-all duration-500 transform hover:scale-150 ${
-                      index === currentSlide ? 'bg-teal-400 scale-125' : 'bg-white/80'
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      index === currentSlide ? 'bg-teal-400' : 'bg-white/80'
                     }`}
                   />
                 ))}
@@ -138,19 +138,19 @@ const Home = () => {
           </div>
         </section>
 
-        <section ref={featuresRef} className="py-24 bg-gradient-to-br from-black via-gray-900 to-black">
-          <div className="container mx-auto px-8">
-            <h3 className="text-3xl font-bold text-center bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent mb-16">Discover What Planique Can Do for You</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <section ref={featuresRef} className="py-16 bg-gradient-to-br from-black via-gray-900 to-black">
+          <div className="container mx-auto px-4">
+            <h3 className="text-3xl font-bold text-center bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent mb-12">Discover What Planique Can Do for You</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { icon: manageIcon, title: "Create & Manage Events", desc: "Effortlessly create events and manage details all in one place." },
                 { icon: budgetIcon, title: "Track Budgets & Vendors", desc: "Keep a close eye on budgets and easily manage vendor interactions." },
                 { icon: rsvpIcon, title: "RSVP & Guest Management", desc: "Organize guest lists and monitor RSVP statuses in real-time." },
                 { icon: invoiceIcon, title: "Generate Invoices & Reports", desc: "Efficiently generate and manage invoices and event reports." }
               ].map((feature, index) => (
-                <div key={index} className="group p-6 bg-gray-900/50 backdrop-blur-xl rounded-xl shadow-lg hover:shadow-xl hover:shadow-teal-500/20 transition-all duration-500 hover:-translate-y-4 border border-teal-500/20 hover:border-teal-500/50">
-                  <img src={feature.icon} alt={feature.title} className="w-16 h-16 mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500" />
-                  <h4 className="text-lg font-bold text-teal-400 mb-2">{feature.title}</h4>
+                <div key={index} className="p-6 bg-gray-900/50 backdrop-blur-xl rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-teal-500/20">
+                  <img src={feature.icon} alt={feature.title} className="w-16 h-16 mb-4 transition-all duration-300" />
+                  <h4 className="text-lg font-medium text-teal-400 mb-2">{feature.title}</h4>
                   <p className="text-gray-300 text-sm">{feature.desc}</p>
                 </div>
               ))}
@@ -165,10 +165,6 @@ const Home = () => {
         * {
           -ms-overflow-style: none;
           scrollbar-width: none;
-        }
-        @keyframes slide {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-100%); }
         }
       `}</style>
     </div>

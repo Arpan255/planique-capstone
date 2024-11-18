@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CreateEvent = () => {
   const [eventDetails, setEventDetails] = useState({
-    username: '',
+    username: localStorage.getItem('username') || '',
     name: '',
-    description: '',
+    description: '', 
     date: '',
     type: '',
     budget: '',
-    status: '',
+    status: 'In Progress',
     googleCalendarEventId: ''
   });
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const username = localStorage.getItem('username');
+    if (!username) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,7 +34,7 @@ const CreateEvent = () => {
     e.preventDefault();
     
     try {
-      const token = localStorage.getItem('token'); // Get the token for authorization
+      const token = localStorage.getItem('token');
 
       const response = await fetch('http://localhost:9091/event/create', {
         method: 'POST',
@@ -51,12 +58,12 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex justify-center items-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Create Event</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="name">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 font-['Arial'] flex justify-center items-center">
+      <div className="w-full max-w-md p-8 m-4 bg-slate-800/50 backdrop-blur-lg rounded-xl shadow-2xl border border-slate-700/50">
+        <h2 className="text-3xl font-bold text-center text-white mb-8 bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Create Event</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-emerald-400 text-sm font-semibold mb-2" htmlFor="name">
               Event Name
             </label>
             <input
@@ -65,27 +72,26 @@ const CreateEvent = () => {
               name="name"
               value={eventDetails.name}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-3 bg-slate-900/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-white"
               required
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="username">
-              Username
+          {/* <div>
+            <label className="block text-emerald-400 text-sm font-semibold mb-2" htmlFor="username">
+              Hostname
             </label>
             <input
               type="text"
               id="username"
               name="username"
               value={eventDetails.username}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
+              className="w-full p-3 bg-slate-900/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-white cursor-not-allowed"
+              disabled
             />
-          </div>
+          </div> */}
 
-          <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="description">
+          <div>
+            <label className="block text-emerald-400 text-sm font-semibold mb-2" htmlFor="description">
               Description
             </label>
             <textarea
@@ -93,13 +99,13 @@ const CreateEvent = () => {
               name="description"
               value={eventDetails.description}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-3 bg-slate-900/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-white min-h-[100px]"
               required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="date">
+          <div>
+            <label className="block text-emerald-400 text-sm font-semibold mb-2" htmlFor="date">
               Event Date
             </label>
             <input
@@ -108,29 +114,36 @@ const CreateEvent = () => {
               name="date"
               value={eventDetails.date}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-3 bg-slate-900/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-white [color-scheme:dark]"
               required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="type">
+          <div>
+            <label className="block text-emerald-400 text-sm font-semibold mb-2" htmlFor="type">
               Event Type
             </label>
-            <input
-              type="text"
+            <select
               id="type"
               name="type"
               value={eventDetails.type}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-3 bg-slate-900/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-white [&>*]:bg-slate-900"
               required
-            />
+            >
+              <option value="">Select event type</option>
+              <option value="Celebration">Celebration</option>
+              <option value="Wedding">Wedding</option>
+              <option value="Birthday">Birthday</option>
+              <option value="Conference">Conference</option>
+              <option value="Funeral">Funeral</option>
+              <option value="Others">Others</option>
+            </select>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="budget">
-              Budget
+          <div>
+            <label className="block text-emerald-400 text-sm font-semibold mb-2" htmlFor="budget">
+              Budget(in INR)
             </label>
             <input
               type="number"
@@ -138,13 +151,13 @@ const CreateEvent = () => {
               name="budget"
               value={eventDetails.budget}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-3 bg-slate-900/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-white"
               required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="status">
+          {/* <div>
+            <label className="block text-emerald-400 text-sm font-semibold mb-2" htmlFor="status">
               Event Status
             </label>
             <input
@@ -152,15 +165,14 @@ const CreateEvent = () => {
               id="status"
               name="status"
               value={eventDetails.status}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
+              className="w-full p-3 bg-slate-900/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-white cursor-not-allowed"
+              disabled
             />
-          </div>
+          </div> */}
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+            className="w-full py-3 px-6 bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 font-bold rounded-lg hover:from-emerald-500 hover:to-teal-500 transform hover:-translate-y-0.5 transition-all duration-200"
           >
             Create Event
           </button>

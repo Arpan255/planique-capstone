@@ -1,20 +1,133 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { FaTrash, FaEdit } from 'react-icons/fa';
 
 const ViewExpenses = () => {
   const { eventId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [expenses, setExpenses] = useState([]);
+  const [filteredExpenses, setFilteredExpenses] = useState([]);
   const [expensesByCategory, setExpensesByCategory] = useState([]);
   const [totalExpensesSum, setTotalExpensesSum] = useState(0);
   const [remainingBudgetCalc, setRemainingBudgetCalc] = useState(0);
+  const [vendors, setVendors] = useState([]);
+  const [selectedVendor, setSelectedVendor] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingExpense, setEditingExpense] = useState(null);
+  const [selectedVendorFilter, setSelectedVendorFilter] = useState('');
+  const [showVendorDropdown, setShowVendorDropdown] = useState(false);
   
   const { totalBudget } = location.state || {};
+  const getVendorName = (vendorId) => {
+    console.log('Looking for vendorId:', vendorId);
+    console.log('Available vendors:', vendors);
+    const vendor = vendors.find(v => v.vendorId === vendorId);
+    console.log('Found vendor:', vendor);
+    return vendor ? vendor.vendorCompanyName : 'Venue';
+  };
 
   useEffect(() => {
-    fetchExpenses();
+    const loadData = async () => {
+      console.log('Loading data for eventId:', eventId);
+      await fetchVendors(); // Load vendors first
+      await fetchExpenses(); // Then load expenses
+    };
+    
+    loadData();
   }, [eventId]);
+
+  const handleEditClick = (expense) => {
+    setEditingExpense(expense);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateExpense = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:8222/api/expenses/update/${editingExpense.expenseId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editingExpense)
+      });
+
+      if (response.ok) {
+        setShowEditModal(false);
+        setEditingExpense(null);
+        fetchExpenses();
+      } else {
+        console.error("Failed to update expense");
+      }
+    } catch (error) {
+      console.error("Error updating expense:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedVendorFilter) {
+      const filtered = expenses.filter(expense => 
+        getVendorName(expense.vendorId) === selectedVendorFilter
+      );
+      setFilteredExpenses(filtered);
+      
+      const filteredTotal = filtered.reduce((sum, expense) => sum + parseFloat(expense.totalAmount), 0);
+      setTotalExpensesSum(filteredTotal);
+      setRemainingBudgetCalc(totalBudget - filteredTotal);
+
+      const categoryGroups = filtered.reduce((groups, expense) => {
+        const category = expense.expenseCategory;
+        if (!groups[category]) {
+          groups[category] = 0;
+        }
+        groups[category] += parseFloat(expense.totalAmount);
+        return groups;
+      }, {});
+
+      const categoryData = Object.entries(categoryGroups).map(([name, value]) => ({
+        name,
+        value
+      }));
+
+      setExpensesByCategory(categoryData);
+    } else {
+      setFilteredExpenses(expenses);
+      const total = expenses.reduce((sum, expense) => sum + parseFloat(expense.totalAmount), 0);
+      setTotalExpensesSum(total);
+      setRemainingBudgetCalc(totalBudget - total);
+
+      const categoryGroups = expenses.reduce((groups, expense) => {
+        const category = expense.expenseCategory;
+        if (!groups[category]) {
+          groups[category] = 0;
+        }
+        groups[category] += parseFloat(expense.totalAmount);
+        return groups;
+      }, {});
+
+      const categoryData = Object.entries(categoryGroups).map(([name, value]) => ({
+        name,
+        value
+      }));
+
+      setExpensesByCategory(categoryData);
+    }
+  }, [selectedVendorFilter, expenses, totalBudget]);
+
+  const fetchVendors = async () => {
+    try {
+      const response = await fetch(`http://localhost:9094/api/vendors/vendors/${eventId}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Fetched vendors:', data); // Add this log
+        setVendors(data);
+      }
+    } catch (error) {
+      console.error("Error fetching vendors:", error);
+    }
+  };
 
   const fetchExpenses = async () => {
     try {
@@ -22,16 +135,14 @@ const ViewExpenses = () => {
       if (response.ok) {
         const data = await response.json();
         setExpenses(data);
+        setFilteredExpenses(data);
         
-        // Calculate total expenses
         const total = data.reduce((sum, expense) => sum + parseFloat(expense.totalAmount), 0);
         setTotalExpensesSum(total);
         
-        // Calculate remaining budget
         const remaining = totalBudget - total;
         setRemainingBudgetCalc(remaining);
         
-        // Group expenses by category
         const categoryGroups = data.reduce((groups, expense) => {
           const category = expense.expenseCategory;
           if (!groups[category]) {
@@ -41,7 +152,6 @@ const ViewExpenses = () => {
           return groups;
         }, {});
 
-        // Convert to array format for chart
         const categoryData = Object.entries(categoryGroups).map(([name, value]) => ({
           name,
           value
@@ -54,12 +164,82 @@ const ViewExpenses = () => {
     }
   };
 
+  const handleDeleteExpense = async (expenseId) => {
+    if (window.confirm('Are you sure you want to delete this expense?')) {
+      try {
+        const response = await fetch(`http://localhost:8222/api/expenses/delete/${expenseId}`, {
+          method: 'DELETE'
+        });
+        if (response.ok) {
+          fetchExpenses();
+        }
+      } catch (error) {
+        console.error("Error deleting expense:", error);
+      }
+    }
+  };
+
+  // const getVendorName = (vendorId) => {
+  //   const vendor = vendors.find(v => v.vendorId === vendorId);
+  //   return vendor ? vendor.vendorCompanyName : 'N/A';
+  // };
+
+  const handleVendorClick = (vendorId) => {
+    const vendor = vendors.find(v => v.vendorId === vendorId);
+    setSelectedVendor(vendor);
+  };
+
+  const handleVendorFilter = (vendorName) => {
+    setSelectedVendorFilter(vendorName);
+    setShowVendorDropdown(false);
+  };
+
   const COLORS = ['#00C49F', '#FF8042', '#0088FE', '#FFBB28', '#8884d8'];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-emerald-400 mb-8">Budget Overview</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-emerald-400">Budget Overview</h1>
+          <div className="flex gap-4">
+            <div className="relative">
+              <button 
+                onClick={() => setShowVendorDropdown(!showVendorDropdown)}
+                className="px-4 py-2 bg-emerald-400 text-slate-900 rounded hover:bg-emerald-500 transition-colors"
+              >
+                {selectedVendorFilter || 'Filter by Vendor'}
+              </button>
+              {showVendorDropdown && (
+                <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-xl z-10">
+                  {vendors.map((vendor) => (
+                    <div
+                      key={vendor.vendorId}
+                      onClick={() => handleVendorFilter(vendor.vendorCompanyName)}
+                      className="px-4 py-2 hover:bg-slate-700 cursor-pointer text-slate-200"
+                    >
+                      {vendor.vendorCompanyName}
+                    </div>
+                  ))}
+                  <div
+                    onClick={() => {
+                      setSelectedVendorFilter('');
+                      setShowVendorDropdown(false);
+                    }}
+                    className="px-4 py-2 hover:bg-slate-700 cursor-pointer text-red-400 border-t border-slate-700"
+                  >
+                    Clear Filter
+                  </div>
+                </div>
+              )}
+            </div>
+            <button 
+              onClick={() => navigate(-1)}
+              className="px-4 py-2 bg-emerald-400 text-slate-900 rounded hover:bg-emerald-500 transition-colors"
+            >
+              Back to Event
+            </button>
+          </div>
+        </div>
         
         {/* Budget Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -116,25 +296,140 @@ const ViewExpenses = () => {
               <thead>
                 <tr className="text-left border-b border-slate-700">
                   <th className="py-3 px-4">Description</th>
-                  <th className="py-3 px-4">Category</th>
                   <th className="py-3 px-4">Amount</th>
                   <th className="py-3 px-4">Payment Status</th>
                   <th className="py-3 px-4">Date</th>
+                  <th className="py-3 px-4">Vendor</th>
+                  <th className="py-3 px-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {expenses.map((expense) => (
+                {filteredExpenses.map((expense) => (
                   <tr key={expense.expenseId} className="border-b border-slate-700 hover:bg-slate-700/30">
                     <td className="py-3 px-4">{expense.expenseDescription}</td>
-                    <td className="py-3 px-4">{expense.expenseCategory}</td>
                     <td className="py-3 px-4">${parseFloat(expense.totalAmount).toFixed(2)}</td>
                     <td className="py-3 px-4">{expense.paymentStatus}</td>
                     <td className="py-3 px-4">{new Date(expense.expenseDate).toLocaleDateString()}</td>
+                    <td className="py-3 px-4 cursor-pointer hover:text-emerald-400" 
+                      onClick={() => handleVendorClick(expense.vendorId)}>
+                    {(() => {
+                      console.log('Rendering vendor name for expense:', expense);
+                      return getVendorName(expense.vendorId);
+                    })()}
+                  </td>
+                    <td className="py-3 px-4">
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => handleEditClick(expense)}
+                          className="text-emerald-400 hover:text-emerald-300 transition-colors"
+                        >
+                          <FaEdit size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteExpense(expense.expenseId)}
+                          className="text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          <FaTrash size={18} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+
+          {/* Edit Expense Modal */}
+          {showEditModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="bg-slate-800 rounded-xl p-8 max-w-md w-full">
+                <h3 className="text-xl font-bold text-emerald-400 mb-4">Edit Expense</h3>
+                <form onSubmit={handleUpdateExpense} className="space-y-4">
+                  <div>
+                    <label className="block text-slate-200 mb-2">Description</label>
+                    <input
+                      type="text"
+                      value={editingExpense.expenseDescription}
+                      onChange={(e) => setEditingExpense({
+                        ...editingExpense,
+                        expenseDescription: e.target.value
+                      })}
+                      className="w-full p-2 rounded bg-slate-700 text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-200 mb-2">Amount</label>
+                    <input
+                      type="number"
+                      value={editingExpense.totalAmount}
+                      onChange={(e) => setEditingExpense({
+                        ...editingExpense,
+                        totalAmount: e.target.value
+                      })}
+                      className="w-full p-2 rounded bg-slate-700 text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-200 mb-2">Payment Status</label>
+                    <select
+                      value={editingExpense.paymentStatus}
+                      onChange={(e) => setEditingExpense({
+                        ...editingExpense,
+                        paymentStatus: e.target.value
+                      })}
+                      className="w-full p-2 rounded bg-slate-700 text-slate-200"
+                    >
+                      <option value="PAID">Paid</option>
+                      <option value="PENDING">Pending</option>
+                      <option value="CANCELLED">Cancelled</option>
+                    </select>
+                  </div>
+                  <div className="flex gap-4 mt-6">
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-emerald-400 text-slate-900 rounded hover:bg-emerald-500 transition-colors"
+                    >
+                      Update
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowEditModal(false);
+                        setEditingExpense(null);
+                      }}
+                      className="px-4 py-2 bg-slate-600 text-slate-200 rounded hover:bg-slate-700 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Vendor Details Modal */}
+          {selectedVendor && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="bg-slate-800 rounded-xl p-8 max-w-md w-full">
+                <h3 className="text-xl font-bold text-emerald-400 mb-4">Vendor Details</h3>
+                <div className="space-y-3">
+                  <p className="text-slate-200"><span className="font-semibold">Company:</span> {selectedVendor.vendorCompanyName}</p>
+                  <p className="text-slate-200"><span className="font-semibold">Service Type:</span> {selectedVendor.vendorServiceType}</p>
+                  <p className="text-slate-200"><span className="font-semibold">Amount:</span> ${selectedVendor.vendorAmount}</p>
+                  <p className="text-slate-200"><span className="font-semibold">Payment Status:</span> {selectedVendor.vendorPaymentStatus}</p>
+                  <p className="text-slate-200"><span className="font-semibold">Contact:</span> {selectedVendor.vendorName}</p>
+                  <p className="text-slate-200"><span className="font-semibold">Email:</span> {selectedVendor.vendorEmail}</p>
+                  <p className="text-slate-200"><span className="font-semibold">Phone:</span> {selectedVendor.vendorPhone}</p>
+                </div>
+                <button 
+                  onClick={() => setSelectedVendor(null)}
+                  className="mt-6 px-4 py-2 bg-emerald-400 text-slate-900 rounded hover:bg-emerald-500 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

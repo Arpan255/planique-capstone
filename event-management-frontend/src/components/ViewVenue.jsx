@@ -8,6 +8,9 @@ const ViewVenue = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [expenses, setExpenses] = useState([]);
+  const [paidAmount, setPaidAmount] = useState(0);
+  const [paymentStatus, setPaymentStatus] = useState('PENDING');
   const [venueForm, setVenueForm] = useState({
     venueId: '',
     eventId: '',
@@ -22,17 +25,63 @@ const ViewVenue = () => {
 
   useEffect(() => {
     fetchVenue();
+    fetchExpenses();
   }, [eventId]);
+
+  const fetchExpenses = async () => {
+    try {
+      const response = await fetch(`http://localhost:8222/api/expenses/events/${eventId}`);
+      if (response.ok) {
+        const data = await response.json();
+        // Filter expenses related to venue
+        const venueExpenses = data.filter(expense => 
+          expense.expenseCategory === 'VENUE'
+        );
+        setExpenses(venueExpenses);
+        
+        // Calculate total paid amount
+        const totalPaid = venueExpenses.reduce((sum, expense) => 
+          sum + parseFloat(expense.totalAmount || 0), 0
+        );
+        setPaidAmount(totalPaid);
+        if (venue && totalPaid >= venue.cost) {
+          setPaymentStatus('PAID');
+        } else if (totalPaid > 0) {
+          setPaymentStatus('PARTIAL');
+        } else {
+          setPaymentStatus('PENDING');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching expenses:', error);
+    }
+  };
 
   const fetchVenue = async () => {
     try {
       setLoading(true);
       const response = await fetch(`http://localhost:9093/venue/event/${eventId}`);
       if (!response.ok) {
+        if (response.status === 404) {
+          setVenue(null);
+          return;
+        }
         throw new Error('Failed to fetch venue');
       }
-      const data = await response.json();
-      setVenue(data);
+      
+      const text = await response.text(); // First get response as text
+      if (!text) { // Check if response is empty
+        setVenue(null);
+        return;
+      }
+      
+      try {
+        const data = JSON.parse(text); // Try to parse the text as JSON
+        setVenue(data);
+      } catch (parseError) {
+        console.error('Error parsing venue data:', parseError);
+        throw new Error('Invalid venue data received');
+      }
     } catch (error) {
       setError(error.message);
     } finally {
@@ -140,7 +189,32 @@ const ViewVenue = () => {
                   <p className="text-slate-300 mb-2"><span className="font-medium text-emerald-300">Phone:</span> {venue.phone}</p>
                   <p className="text-slate-300"><span className="font-medium text-emerald-300">Email:</span> {venue.email}</p>
                 </div>
+                <div className="bg-slate-700/30 p-4 rounded-lg">
+          <h3 className="text-emerald-400 font-semibold mb-3">Payment Information</h3>
+          <p className="text-slate-300 mb-2">
+            <span className="font-medium text-emerald-300">Total Cost:</span> ${venue?.cost || 0}
+          </p>
+          <p className="text-slate-300 mb-2">
+            <span className="font-medium text-emerald-300">Paid Amount:</span> ${paidAmount.toFixed(2)}
+          </p>
+          <p className="text-slate-300 mb-2">
+            <span className="font-medium text-emerald-300">Remaining:</span> ${(venue?.cost - paidAmount).toFixed(2)}
+          </p>
+          <p className="text-slate-300">
+            <span className="font-medium text-emerald-300">Payment Status:</span>{' '}
+            <span className={`px-2 py-1 rounded-full text-xs ${
+              paymentStatus === 'PAID' 
+                ? 'bg-emerald-100 text-emerald-800' 
+                : paymentStatus === 'PARTIAL'
+                ? 'bg-amber-100 text-amber-800'
+                : 'bg-rose-100 text-rose-800'
+            }`}>
+              {paymentStatus}
+              </span>
+                </p>
               </div>
+            </div>
+              {/* </div> */}
               
               <div className="mt-6 bg-slate-700/30 p-4 rounded-lg">
                 <h3 className="text-emerald-400 font-semibold mb-3">Notes</h3>
@@ -163,7 +237,7 @@ const ViewVenue = () => {
               </div>
             </>
           ) : (
-            <p className="text-slate-300 text-center">No venue information available</p>
+            <p className="text-slate-300 text-center text-lg">No venue has been added for this event yet.</p>
           )}
         </div>
       </div>

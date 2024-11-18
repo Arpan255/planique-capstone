@@ -25,12 +25,20 @@ const Dashboard = () => {
             </Link>
             <div>
               {username ? (
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg hover:scale-105 transition-all duration-300"
-                >
-                  Logout
-                </button>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => navigate(-1)}
+                    className="px-4 py-2 bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 rounded-lg font-medium hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  >
+                    Logout
+                  </button>
+                </div>
               ) : (
                 <>
                   <Link
@@ -95,11 +103,11 @@ const Dashboard = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-slate-900/90 backdrop-blur-md shadow-md mt-auto py-6">
+      {/* <footer className="bg-slate-900/90 backdrop-blur-md shadow-md mt-auto py-6">
         <div className="container mx-auto px-6">
           <p className="text-center text-slate-400">&copy; 2024 Planique. All rights reserved.</p>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 };

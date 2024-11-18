@@ -58,9 +58,9 @@ const Tutorial = () => {
               <h1 className="text-2xl font-black bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-500">Planique</h1>
             </Link>
             <nav className="hidden md:flex items-center space-x-8">
-              {/* <button onClick={scrollToTop} className="text-base text-gray-300 hover:text-teal-400 transition-all duration-300 font-medium hover:scale-110">
+              <Link to="/" className="text-base text-gray-300 hover:text-teal-400 transition-all duration-300 font-medium hover:scale-110">
                 Home
-              </button> */}
+              </Link>
               <Link to="/tutorial" className="text-base text-gray-300 hover:text-teal-400 transition-all duration-300 font-medium hover:scale-110">
                 Tutorials
               </Link>
@@ -79,6 +79,16 @@ const Tutorial = () => {
 
       <div className="container mx-auto px-8 pt-32">
         <h1 className="text-5xl font-bold mb-12 text-center bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Find Event Planning Inspiration</h1>
+
+        <div className="text-gray-300 text-center mb-8">
+          <p>Welcome to our Tutorials page! Here you can:</p>
+          <ul className="mt-4 space-y-2">
+            <li>🔍 Search for event planning tutorials by type (weddings, conferences, parties, etc)</li>
+            <li>📺 Watch curated YouTube videos from event planning experts</li>
+            <li>💡 Get tips and inspiration for organizing your own events</li>
+            <li>📚 Learn best practices from experienced event planners</li>
+          </ul>
+        </div>
 
         <div className="flex items-center justify-center mb-12">
           <input
