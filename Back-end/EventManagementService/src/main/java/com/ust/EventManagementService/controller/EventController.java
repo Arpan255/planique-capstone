@@ -73,4 +73,10 @@ public class EventController {
         return eventService.getExpensesByEvent(eventId);
     }
 
+    @GetMapping("/showEvents/{username}")
+    public ResponseEntity<List<Event>> getEventsByUsername(@PathVariable String username) {
+        List<Event> events = eventService.getEventsByUsername(username);
+        return ResponseEntity.ok(events);
+    }
+
 }

@@ -75,4 +75,17 @@ public class GuestController {
         }
         return ResponseEntity.notFound().build();
     }
+    @PutMapping("/update/{guestId}")
+    public ResponseEntity<Guest> updateGuest(@PathVariable String guestId, @RequestBody Guest updatedGuest) {
+        Guest guest = guestService.findById(guestId);
+        if (guest != null) {
+            guest.setName(updatedGuest.getName());
+            guest.setEmail(updatedGuest.getEmail());
+            guest.setRsvpStatus(updatedGuest.getRsvpStatus());
+            guest.setEventId(updatedGuest.getEventId());
+            guestService.updateGuest(guest);
+            return ResponseEntity.ok(guest);
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

@@ -21,6 +21,8 @@ public class Expense {
     private String eventId;
     @NotBlank
     private String vendorId;
+    private String vendorName;
+    private String venueName;
     private String expenseDescription;
     private double TotalAmount;
     private LocalDate expenseDate;

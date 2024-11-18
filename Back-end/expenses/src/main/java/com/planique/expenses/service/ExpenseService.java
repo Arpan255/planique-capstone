@@ -45,4 +45,12 @@ public class ExpenseService {
     public List<Expense> getAllExpenses() {
         return expenseRepository.findAll();
     }
+
+    public void deleteExpense(String expenseId) {
+        expenseRepository.deleteById(expenseId);
+    }
+
+    public Expense getExpenseById(String expenseId) {
+        return expenseRepository.findById(expenseId).orElse(null);
+    }
 }

@@ -60,5 +60,31 @@ public class ExpenseController {
             return ResponseEntity.internalServerError().build();
         }
     }
+    @DeleteMapping("/delete/{expenseId}")
+    public ResponseEntity<Void> deleteExpense(@PathVariable String expenseId) {
+        expenseService.deleteExpense(expenseId);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping("/update/{expenseId}")
+    public ResponseEntity<Expense> updateExpense(@PathVariable String expenseId, @RequestBody Expense updatedExpense) {
+        Expense existingExpense = expenseService.getExpenseById(expenseId);
+        if (existingExpense != null) {
+            existingExpense.setEventId(updatedExpense.getEventId());
+            existingExpense.setVendorId(updatedExpense.getVendorId());
+            existingExpense.setVendorName(updatedExpense.getVendorName());
+            existingExpense.setExpenseDescription(updatedExpense.getExpenseDescription());
+            existingExpense.setTotalAmount(updatedExpense.getTotalAmount());
+            existingExpense.setExpenseDate(updatedExpense.getExpenseDate());
+            existingExpense.setExpenseCategory(updatedExpense.getExpenseCategory());
+            existingExpense.setExpensePaymentMethod(updatedExpense.getExpensePaymentMethod());
+            existingExpense.setPaymentStatus(updatedExpense.getPaymentStatus());
+            existingExpense.setInvoiceNumber(updatedExpense.getInvoiceNumber());
+
+            Expense updated = expenseService.createExpense(existingExpense);
+            return ResponseEntity.ok(updated);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }
