@@ -39,7 +39,7 @@ const Tutorial = () => {
 
   const handleVideoClick = (videoId) => {
     const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
-    window.open(youtubeUrl, '_blank'); // Open in new tab instead of navigating away
+    window.open(youtubeUrl, '_blank');
   };
 
   const scrollToTop = () => {
@@ -62,7 +62,7 @@ const Tutorial = () => {
                 Home
               </Link>
               <Link to="/tutorial" className="text-base text-gray-300 hover:text-teal-400 transition-all duration-300 font-medium hover:scale-110">
-                Tutorials
+                Ideas!!!
               </Link>
             </nav>
             <div className="flex items-center space-x-4">
@@ -81,7 +81,7 @@ const Tutorial = () => {
         <h1 className="text-5xl font-bold mb-12 text-center bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Find Event Planning Inspiration</h1>
 
         <div className="text-gray-300 text-center mb-8">
-          <p>Welcome to our Tutorials page! Here you can:</p>
+          <p>Welcome to our idea generator page! Here you can:</p>
           <ul className="mt-4 space-y-2">
             <li>🔍 Search for event planning tutorials by type (weddings, conferences, parties, etc)</li>
             <li>📺 Watch curated YouTube videos from event planning experts</li>

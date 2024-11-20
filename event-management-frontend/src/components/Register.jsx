@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Register() {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,8 +26,7 @@ function Register() {
       });
 
       if (response.status === 200) {
-        alert('User Registered Successfully');
-        // Optionally redirect to login page
+        navigate('/login');
       }
     } catch (error) {
       if (error.response) {

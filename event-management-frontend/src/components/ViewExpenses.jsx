@@ -245,17 +245,17 @@ const ViewExpenses = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg p-6 shadow-lg hover:shadow-emerald-500/20 transition-all duration-300">
             <h3 className="text-slate-400 text-sm mb-2">Total Budget</h3>
-            <p className="text-2xl font-bold text-emerald-400">${totalBudget}</p>
+            <p className="text-2xl font-bold text-emerald-400">₹{totalBudget}</p>
           </div>
           
           <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg p-6 shadow-lg hover:shadow-red-500/20 transition-all duration-300">
             <h3 className="text-slate-400 text-sm mb-2">Total Expenses</h3>
-            <p className="text-2xl font-bold text-red-400">${totalExpensesSum.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-red-400">₹{totalExpensesSum}</p>
           </div>
           
           <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg p-6 shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
             <h3 className="text-slate-400 text-sm mb-2">Remaining Budget</h3>
-            <p className="text-2xl font-bold text-blue-400">${remainingBudgetCalc.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-blue-400">₹{remainingBudgetCalc}</p>
           </div>
         </div>
 
@@ -307,7 +307,7 @@ const ViewExpenses = () => {
                 {filteredExpenses.map((expense) => (
                   <tr key={expense.expenseId} className="border-b border-slate-700 hover:bg-slate-700/30">
                     <td className="py-3 px-4">{expense.expenseDescription}</td>
-                    <td className="py-3 px-4">${parseFloat(expense.totalAmount).toFixed(2)}</td>
+                    <td className="py-3 px-4">₹{parseFloat(expense.totalAmount)}</td>
                     <td className="py-3 px-4">{expense.paymentStatus}</td>
                     <td className="py-3 px-4">{new Date(expense.expenseDate).toLocaleDateString()}</td>
                     <td className="py-3 px-4 cursor-pointer hover:text-emerald-400" 
@@ -377,7 +377,7 @@ const ViewExpenses = () => {
                         ...editingExpense,
                         paymentStatus: e.target.value
                       })}
-                      className="w-full p-2 rounded bg-slate-700 text-slate-200"
+                      className="w-full p-2 rounded bg-slate-900 text-slate-200 border border-slate-700"
                     >
                       <option value="PAID">Paid</option>
                       <option value="PENDING">Pending</option>

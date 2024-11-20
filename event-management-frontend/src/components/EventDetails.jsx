@@ -81,15 +81,10 @@ const EventDetails = () => {
 
   const fetchVendorsAndVenue = async () => {
     try {
-      // Fetch vendors
       const vendorsResponse = await fetch(`http://localhost:9094/api/vendors/vendors/${eventId}`);
       const vendorsData = await vendorsResponse.json();
-
-      // Fetch venue
       const venueResponse = await fetch(`http://localhost:9093/venue/event/${eventId}`);
       const venueData = await venueResponse.json();
-
-      // Transform venue data to match vendor structure
       const venueAsProvider = venueData ? [{
         vendorId: `venue_${venueData.venueId}`, // Prefix to distinguish from vendor IDs
         vendorCompanyName: venueData.name,
@@ -318,7 +313,6 @@ const EventDetails = () => {
 
   const addVendor = async () => {
     try {
-      // const nextVendorId = vendors.length > 0 ? Math.max(...vendors.map(vendor => vendor.vendorId)) + 1 : 1;
       const newVendorForm = { ...vendorForm, eventId };
       const response = await fetch('http://localhost:9094/api/vendors/add', {
         method: 'POST',
@@ -365,11 +359,7 @@ const EventDetails = () => {
 
   const addGuest = async () => {
     try {
-      // const nextGuestId = guests.length > 0 ? Math.max(...guests.map(guest => guest.guestId)) + 1 : 1;
-      // const newGuestForm = { ...guestForm, guestId: nextGuestId };
-      // Add eventId to the guest form data
       const guestFormWithEventId = { ...guestForm, eventId };
-
       const response = await fetch('http://localhost:9092/api/guests/addguests', {
         method: 'POST',
         headers: {
@@ -488,6 +478,8 @@ const EventDetails = () => {
   };
   
   const handleGoogleCalendarClick = () => {
+    localStorage.setItem('returnToEventId', eventId);
+
     <Link to={`/google-calendar/${eventId}`}>Go to Google Calendar</Link>;
   };
 
@@ -554,30 +546,6 @@ const EventDetails = () => {
       invoiceNumber: ''
     });
   };
-
-  // const handleExpenseInputChange = (e) => {
-  //   const { name, value } = e.target;
-    
-  //   // Special handling for vendor selection
-  //   if (name === 'vendorId') {
-  //     const selectedVendor = vendors.find(vendor => vendor.vendorId.toString() === value);
-  //     if (selectedVendor) {
-  //       setExpenseForm(prevForm => ({
-  //         ...prevForm,
-  //         vendorId: value,
-  //         totalAmount: selectedVendor.vendorAmount,
-  //         paymentStatus: selectedVendor.vendorPaymentStatus.toUpperCase(),
-  //         expenseCategory: selectedVendor.vendorServiceType.toUpperCase(),
-  //       }));
-  //     }
-  //   } else {
-  //     setExpenseForm(prevForm => ({
-  //       ...prevForm,
-  //       [name]: value,
-  //     }));
-  //   }
-  // };
-  
   const addExpense = async () => {
     try {
       const newExpenseForm = { ...expenseForm, eventId };
@@ -604,7 +572,6 @@ const EventDetails = () => {
     addExpense();
   };
   const handleViewExpenses = () => {
-    // Pass budget information as URL parameters
     navigate(`/viewexpenses/${eventId}`, {
       state: {
         totalBudget: eventDetails.budget,
@@ -632,8 +599,6 @@ const EventDetails = () => {
       console.error("Error:", error);
     }
   };
-
-  // Add event details to useEffect
   useEffect(() => {
     fetchEventDetails();
   }, [eventId]);
@@ -641,8 +606,8 @@ const EventDetails = () => {
 
 
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+  return ( 
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">     
       <div className="flex justify-end gap-4 mb-4">
         <button 
           onClick={() => navigate(-1)}
@@ -684,11 +649,9 @@ const EventDetails = () => {
         </div>
       </div>
       <div className="flex">
-        {/* Left half - Other cards */}
         <div className="w-1/2 grid grid-cols-2 gap-4 pr-1">
-          {/* Vendors Card */}
-          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 hover:shadow-lg transition-all duration-300 max-h-fit">
-            <h2 className="text-xl font-bold mb-2 text-emerald-400">Vendors</h2>
+          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 hover:shadow-xl hover:scale-105 hover:bg-gradient-to-br hover:from-slate-800/90 hover:to-emerald-900/30 transition-all duration-300 max-h-fit group">
+            <h2 className="text-xl font-bold mb-2 text-emerald-400 group-hover:text-emerald-300">Vendors</h2>
             {message && (
               <div className="bg-emerald-900/50 text-emerald-400 p-2 rounded mb-2">
                 {message}
@@ -705,8 +668,8 @@ const EventDetails = () => {
           </div>
 
           {/* Venue Card */}
-          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 max-h-fit hover:shadow-lg transition-all duration-300">
-            <h2 className="text-xl font-bold mb-2 text-emerald-400">Venue</h2>
+          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 max-h-fit hover:shadow-xl hover:scale-105 hover:bg-gradient-to-br hover:from-slate-800/90 hover:to-emerald-900/30 transition-all duration-300 group">
+            <h2 className="text-xl font-bold mb-2 text-emerald-400 group-hover:text-emerald-300">Venue</h2>
             <div className="flex gap-2 mb-4">
               <button onClick={() => openVenueModal()} className="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 px-3 py-1 rounded hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm">
                 Create Venue
@@ -718,8 +681,8 @@ const EventDetails = () => {
           </div>
 
           {/* Guests Card */}
-          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg max-h-fit shadow p-4 hover:shadow-lg transition-all duration-300">
-            <h2 className="text-xl font-bold mb-2 text-emerald-400">Guests</h2>
+          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg max-h-fit shadow p-4 hover:shadow-xl hover:scale-105 hover:bg-gradient-to-br hover:from-slate-800/90 hover:to-emerald-900/30 transition-all duration-300 group">
+            <h2 className="text-xl font-bold mb-2 text-emerald-400 group-hover:text-emerald-300">Guests</h2>
             <div className="flex gap-2 mb-4">
               <button onClick={() => openGuestModal()} className="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 px-3 py-1 rounded hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm">
                 Add Guest
@@ -731,8 +694,8 @@ const EventDetails = () => {
           </div>
 
           {/* Budget Card */}
-          <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl max-h-fit shadow-lg p-4 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl font-bold mb-2 text-emerald-400">Expenses</h2>
+          <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl max-h-fit shadow-lg p-4 hover:shadow-xl hover:scale-105 hover:bg-gradient-to-br hover:from-slate-800/90 hover:to-emerald-900/30 transition-all duration-300 group">
+            <h2 className="text-xl font-bold mb-2 text-emerald-400 group-hover:text-emerald-300">Expenses</h2>
             {message && (
               <div className="bg-emerald-900/50 text-emerald-400 p-3 rounded-lg mb-4">
                 {message}
@@ -748,17 +711,21 @@ const EventDetails = () => {
             </div>
             </div>
         </div>
-
-        {/* Right half - Google Calendar */}
         <div className="w-1/2 pl-2">
-          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 hover:shadow-lg transition-shadow h-full">
-            <h2 className="text-xl font-bold mb-2 text-emerald-400">Google Calendar</h2>
-            <GoogleCalendar eventId={eventId} />
+          <div className="bg-slate-800/50 backdrop-blur-lg rounded-lg shadow p-4 hover:shadow-xl hover:scale-105 hover:bg-gradient-to-br hover:from-slate-800/90 hover:to-emerald-900/30 transition-all duration-300 group h-full">
+            <h2 className="text-xl font-bold mb-2 text-emerald-400 group-hover:text-emerald-300">Google Calendar</h2>
+            <GoogleCalendar 
+              eventId={eventId} 
+              onAuthSuccess={() => {
+                const returnToEventId = localStorage.getItem('returnToEventId');
+                if (returnToEventId) {
+                  localStorage.removeItem('returnToEventId');
+                }
+              }} 
+            />
           </div>
         </div>
       </div>
-
-      {/* Modal for Vendor Add/Edit */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" onClick={handleBackdropClick}>
           <div className="bg-slate-800 rounded-lg p-6 max-w-xl w-full">
@@ -1025,10 +992,11 @@ const EventDetails = () => {
               onChange={handleExpenseInputChange}
               required
               className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-emerald-400 outline-none transition-all duration-300 text-slate-200"
+              style={{backgroundColor: '#1e293b'}} // Darker background
             >
-              <option value="">Select Service Provider</option>
+              <option value="" className="bg-slate-800 text-slate-200">Select Service Provider</option>
               {serviceProviders.map((provider) => (
-                <option key={provider.vendorId} value={provider.vendorId}>
+                <option key={provider.vendorId} value={provider.vendorId} className="bg-slate-800 text-slate-200">
                   {provider.vendorCompanyName} - {provider.vendorServiceType}
                 </option>
               ))}

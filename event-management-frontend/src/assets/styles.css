@@ -54,6 +54,43 @@ html, body {
   border: 1px solid rgba(229, 231, 235, 0.5);
   will-change: transform;
 }
+/* ... existing styles ... */
+
+/* Console and Component positioning */
+#root {
+  position: relative;
+  min-height: 100vh;
+}
+
+.console-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-secondary);
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  transition: var(--transition);
+}
+
+/* Ensure main content doesn't shift */
+.main-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+
+/* Prevent body scroll when console is open */
+body.console-open {
+  overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .console-overlay {
+    height: 50vh; /* Adjust based on your needs */
+  }
+}
 
 .card:hover {
   transform: translateY(-2px);

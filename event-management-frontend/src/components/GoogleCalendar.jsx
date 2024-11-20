@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useSession, useSupabaseClient, useSessionContext } from '@supabase/auth-helpers-react';
 import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css"; // Import the CSS for the date picker
+import "react-datepicker/dist/react-datepicker.css"; 
+import { useNavigate } from 'react-router-dom';
 
 function GoogleCalendar() {
   const [start, setStart] = useState(new Date());
@@ -9,12 +10,12 @@ function GoogleCalendar() {
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
 
-  const session = useSession(); // Gets the current session
-  const supabase = useSupabaseClient(); // Supabase client for OAuth
+  const session = useSession();
+  const supabase = useSupabaseClient();
   const { isLoading } = useSessionContext();
 
   if (isLoading) {
-    return <div className="text-center text-lg text-gray-600">Loading...</div>;
+    return <div className="text-slate-400">Loading...</div>;
   }
 
   const googleSignIn = async () => {
@@ -30,107 +31,120 @@ function GoogleCalendar() {
   const signOut = async () => {
     await supabase.auth.signOut();
   };
-
   const createCalendarEvent = async () => {
+    if (!session?.provider_token) {
+      alert("Please sign in again to refresh your session.");
+      await signOut();
+      return;
+    }
+
     const event = {
       summary: eventName,
       description: eventDescription,
       start: { dateTime: start.toISOString(), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
       end: { dateTime: end.toISOString(), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
     };
+    try {
+      const response = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.provider_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event),
+      });
 
-    await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${session.provider_token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(event),
-    })
-    .then(data => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          await signOut();
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
       alert("Event created! Check your Google Calendar.");
-      console.log(data);
-      setStart(new Date()); // Reset start date to current date
-      setEnd(new Date()); // Reset end date to current date
-      setEventName(""); // Reset event name
-      setEventDescription(""); // Reset event description
-    })
-      .catch(error => console.error("Error creating calendar event:", error));
+      setStart(new Date());
+      setEnd(new Date());
+      setEventName("");
+      setEventDescription("");
+    } catch (error) {
+      console.error("Error creating calendar event:", error);
+      alert("Failed to create event. Please try again.");
+    }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen ">
-      <div className="bg-white p-8 rounded-xl shadow-2xl max-w-lg w-full">
-        {session ? (
-          <div>
-            <h2 className="text-3xl font-semibold text-center text-indigo-700 mb-6">Welcome, {session.user.email}</h2>
-            
-            <div className="mb-4">
-              <label htmlFor="start-time" className="block text-lg font-medium text-gray-700 mb-2">Start Time</label>
+    <div className="w-full">
+      {session ? (
+        <div className="space-y-3">
+          <p className="text-sm text-slate-300">Signed in as {session.user.email}</p>
+          
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs text-slate-400">Start</label>
               <DatePicker
                 selected={start}
                 onChange={(date) => setStart(date)}
                 showTimeSelect
                 dateFormat="Pp"
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full p-1 text-sm bg-slate-800 border border-slate-600 rounded text-slate-200"
               />
             </div>
-            <div className="mb-6">
-              <label htmlFor="end-time" className="block text-lg font-medium text-gray-700 mb-2">End Time</label>
+            <div>
+              <label className="text-xs text-slate-400">End</label>
               <DatePicker
                 selected={end}
                 onChange={(date) => setEnd(date)}
                 showTimeSelect
                 dateFormat="Pp"
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full p-1 text-sm bg-slate-800 border border-slate-600 rounded text-slate-200"
               />
-            </div>
-            
-            <div className="mb-4">
-              <input
-                type="text"
-                placeholder="Event Name"
-                value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-            <div className="mb-6">
-              <input
-                type="text"
-                placeholder="Event Description"
-                value={eventDescription}
-                onChange={(e) => setEventDescription(e.target.value)}
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            <div className="flex justify-between items-center">
-              <button
-                onClick={createCalendarEvent}
-                className="bg-indigo-600 text-white px-6 py-3 rounded-full font-semibold text-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105"
-              >
-                Create Calendar Event
-              </button>
-              <button
-                onClick={signOut}
-                className="text-indigo-600 font-semibold hover:text-indigo-800 transition duration-300 ease-in-out"
-              >
-                Sign Out
-              </button>
             </div>
           </div>
-        ) : (
-          <div className="text-center">
+          
+          <input
+            type="text"
+            placeholder="Event Name"
+            value={eventName}
+            onChange={(e) => setEventName(e.target.value)}
+            className="w-full p-1 text-sm bg-slate-800 border border-slate-600 rounded text-slate-200"
+          />
+          
+          <input
+            type="text"
+            placeholder="Event Description"
+            value={eventDescription}
+            onChange={(e) => setEventDescription(e.target.value)}
+            className="w-full p-1 text-sm bg-slate-800 border border-slate-600 rounded text-slate-200"
+          />
+
+          <div className="flex justify-between">
             <button
-              onClick={googleSignIn}
-              className="bg-red-500 text-white px-6 py-3 rounded-full font-semibold text-lg hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
+              onClick={createCalendarEvent}
+              className="px-3 py-1 text-sm bg-emerald-400 text-slate-900 rounded hover:bg-emerald-500"
             >
-              Sign In with Google
+              Create Event
+            </button>
+            <button
+              onClick={signOut}
+              className="text-sm text-emerald-400 hover:text-emerald-300"
+            >
+              Sign Out
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="text-center">
+          <button
+            onClick={googleSignIn}
+            className="px-3 py-1 text-sm bg-emerald-400 text-slate-900 rounded hover:bg-emerald-500"
+          >
+            Sign In with Google
+          </button>
+        </div>
+      )}
     </div>
   );
 }

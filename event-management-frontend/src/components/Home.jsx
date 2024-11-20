@@ -70,7 +70,7 @@ const Home = () => {
                 Home
               </Link>
               <Link to="/tutorial" className="text-sm text-teal-400 hover:text-teal-400 transition-all duration-300">
-                Tutorials
+                Need Ideas?
               </Link>
             </nav>
             <div className="flex items-center space-x-3">
@@ -96,14 +96,14 @@ const Home = () => {
                   typeSpeed={70}
                 />
               </h2>
-              <p className="text-base text-gray-300 leading-relaxed">
+              <div className="text-base text-gray-300 leading-relaxed">
                 <Typewriter
                   text={fullText}
                   cursorColor="transparent"
                   typeSpeed={30}
                   startDelay={2000}
                 />
-              </p>
+              </div>
               <Link to="/register">
                 <button className="px-8 py-3 bg-gradient-to-br from-teal-500 to-emerald-500 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300">
                   Get Started
@@ -158,7 +158,7 @@ const Home = () => {
           </div>
         </section>
       </main>
-      <style jsx global>{`
+      <style>{`
         ::-webkit-scrollbar {
           display: none;
         }

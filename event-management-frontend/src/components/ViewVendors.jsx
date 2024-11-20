@@ -144,7 +144,7 @@ function ViewVendors() {
                                     <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Contact Name</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Phone</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Email</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Amount</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Decided Amount</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Paid</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Payment Status</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Actions</th>
@@ -160,8 +160,8 @@ function ViewVendors() {
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{vendor.vendorName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{vendor.vendorPhone}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{vendor.vendorEmail}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${vendor.vendorAmount}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${paidAmount.toFixed(2)}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">₹{vendor.vendorAmount}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">₹{paidAmount}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                                                     vendor.vendorPaymentStatus === 'PAID' 

@@ -32,7 +32,7 @@ const Login = () => {
         setErrorMessage('Invalid credentials');
       }
     } catch (error) {
-      setErrorMessage('Error occurred during login');
+      setErrorMessage('Invalid username or password');
       console.error('Login error:', error);
     }
   };
@@ -54,8 +54,8 @@ const Login = () => {
               <Link to="/" className="text-slate-300 hover:text-emerald-400 transition-colors duration-300 font-medium">
                 Home
               </Link>
-              <Link to="/tutorials" className="text-slate-300 hover:text-emerald-400 transition-colors duration-300 font-medium">
-                Tutorials
+              <Link to="/tutorial" className="text-slate-300 hover:text-emerald-400 transition-colors duration-300 font-medium">
+                Need ideas?
               </Link>
             </nav>
           </div>

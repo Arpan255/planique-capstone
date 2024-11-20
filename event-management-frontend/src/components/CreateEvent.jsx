@@ -76,19 +76,6 @@ const CreateEvent = () => {
               required
             />
           </div>
-          {/* <div>
-            <label className="block text-emerald-400 text-sm font-semibold mb-2" htmlFor="username">
-              Hostname
-            </label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={eventDetails.username}
-              className="w-full p-3 bg-slate-900/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-white cursor-not-allowed"
-              disabled
-            />
-          </div> */}
 
           <div>
             <label className="block text-emerald-400 text-sm font-semibold mb-2" htmlFor="description">
@@ -155,20 +142,6 @@ const CreateEvent = () => {
               required
             />
           </div>
-
-          {/* <div>
-            <label className="block text-emerald-400 text-sm font-semibold mb-2" htmlFor="status">
-              Event Status
-            </label>
-            <input
-              type="text"
-              id="status"
-              name="status"
-              value={eventDetails.status}
-              className="w-full p-3 bg-slate-900/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-white cursor-not-allowed"
-              disabled
-            />
-          </div> */}
 
           <button
             type="submit"

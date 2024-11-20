@@ -127,7 +127,8 @@ const ViewVenue = () => {
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this venue?')) {
       try {
-        const response = await fetch(`http://localhost:9093/venue/delete/${venue.venueId}`, {
+        setLoading(true);
+        const response = await fetch(`http://localhost:9093/venue/delete/${eventId}`, {
           method: 'DELETE',
         });
         
@@ -135,28 +136,25 @@ const ViewVenue = () => {
           throw new Error('Failed to delete venue');
         }
         
-        navigate(`/event/${eventId}`);
+        // Reset all relevant states after successful deletion
+        setVenue(null);
+        setExpenses([]);
+        setPaidAmount(0);
+        setPaymentStatus('PENDING');
+        setError(null);
+        
+        // Optional: Show success message
+        alert('Venue deleted successfully');
+        
       } catch (error) {
+        console.error('Error deleting venue:', error);
         setError(error.message);
+        alert('Failed to delete venue. Please try again.');
+      } finally {
+        setLoading(false);
       }
     }
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-        <div className="text-emerald-400 text-center">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-        <div className="text-rose-400 text-center">Error: {error}</div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
@@ -181,7 +179,7 @@ const ViewVenue = () => {
                   <h3 className="text-emerald-400 font-semibold mb-3">Basic Information</h3>
                   <p className="text-slate-300 mb-2"><span className="font-medium text-emerald-300">Name:</span> {venue.name}</p>
                   <p className="text-slate-300 mb-2"><span className="font-medium text-emerald-300">Address:</span> {venue.address}</p>
-                  <p className="text-slate-300"><span className="font-medium text-emerald-300">Cost:</span> ${venue.cost}</p>
+                  <p className="text-slate-300"><span className="font-medium text-emerald-300">Cost:</span> ₹{venue.cost}</p>
                 </div>
                 <div className="bg-slate-700/30 p-4 rounded-lg">
                   <h3 className="text-emerald-400 font-semibold mb-3">Contact Information</h3>
@@ -192,13 +190,13 @@ const ViewVenue = () => {
                 <div className="bg-slate-700/30 p-4 rounded-lg">
           <h3 className="text-emerald-400 font-semibold mb-3">Payment Information</h3>
           <p className="text-slate-300 mb-2">
-            <span className="font-medium text-emerald-300">Total Cost:</span> ${venue?.cost || 0}
+            <span className="font-medium text-emerald-300">Total Cost:</span> ₹{venue?.cost || 0}
           </p>
           <p className="text-slate-300 mb-2">
-            <span className="font-medium text-emerald-300">Paid Amount:</span> ${paidAmount.toFixed(2)}
+            <span className="font-medium text-emerald-300">Paid Amount:</span> ₹{paidAmount}
           </p>
           <p className="text-slate-300 mb-2">
-            <span className="font-medium text-emerald-300">Remaining:</span> ${(venue?.cost - paidAmount).toFixed(2)}
+            <span className="font-medium text-emerald-300">Remaining:</span> ₹{(venue?.cost - paidAmount)}
           </p>
           <p className="text-slate-300">
             <span className="font-medium text-emerald-300">Payment Status:</span>{' '}

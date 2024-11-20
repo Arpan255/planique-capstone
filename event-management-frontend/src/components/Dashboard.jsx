@@ -59,8 +59,6 @@ const Dashboard = () => {
           </div>
         </div>
       </header>
-
-      {/* Main Content */}
       <div className="pt-24 px-6 pb-12">
         <div className="container mx-auto">
           <div className="bg-slate-800/50 backdrop-blur-lg rounded-2xl shadow-xl p-8 max-w-4xl mx-auto transform hover:scale-[1.02] transition-all duration-500">
@@ -70,8 +68,6 @@ const Dashboard = () => {
             <p className="text-center text-slate-300 text-lg mb-12">
               Your one-stop solution for planning and managing events, weddings, and conferences.
             </p>
-
-            {/* Dashboard Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="group bg-gradient-to-br from-emerald-400 to-teal-400 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
                 <div className="p-8 text-slate-900 text-center transform group-hover:scale-105 transition-transform duration-500">
@@ -101,13 +97,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      {/* <footer className="bg-slate-900/90 backdrop-blur-md shadow-md mt-auto py-6">
-        <div className="container mx-auto px-6">
-          <p className="text-center text-slate-400">&copy; 2024 Planique. All rights reserved.</p>
-        </div>
-      </footer> */}
     </div>
   );
 };
