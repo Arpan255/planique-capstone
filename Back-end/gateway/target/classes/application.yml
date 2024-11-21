@@ -1,0 +1,52 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8762/eureka/
+server:
+  port: 8222
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: EventManagementService
+          uri: http://localhost:9091
+          predicates:
+            - Path=/event/**
+        - id: GuestManagementService
+          uri: http://localhost:9092
+          predicates:
+            - Path=/api/guests/**
+        - id:  authentication
+          uri: http://localhost:8789
+          predicates:
+            - Path=/api/auth/**
+        - id: expenses
+          uri: http://localhost:9095
+          predicates:
+            - Path=/api/expenses/**
+        - id: vendor
+          uri: http://localhost:9094
+          predicates:
+            - Path=/api/vendors/**
+        - id: VenueManagementService
+          uri: http://localhost:9093
+          predicates:
+            - Path=/venue/**
+
+
+      routes[0]:
+        filters[0]: AuthenticationFilter
+      routes[1]:
+        filters[0]: AuthenticationFilter
