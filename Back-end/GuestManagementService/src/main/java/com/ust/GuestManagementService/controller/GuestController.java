@@ -51,7 +51,7 @@ public class GuestController {
             message.setTo(guest.getEmail());
             message.setSubject("RSVP Reminder");
             message.setText("Dear " + guest.getName() + ",\n\n" +
-                    "Please RSVP for the upcoming event (Event ID: " + guest.getEventId() + ").\n\n" +
+                    "Please RSVP for the upcoming event.\n\n" +
                     "Best regards");
 
             mailSender.send(message);
