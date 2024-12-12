@@ -58,7 +58,9 @@ function ViewGuests() {
     const handleSendRsvp = async (guestId) => {
         setLoading(true);
         try {
-            await axios.post(`http://localhost:9092/api/guests/${guestId}/send-rsvp`);
+            await axios.post(`http://localhost:9092/api/guests/${guestId}/send-rsvp`, {
+                message: 'Please RSVP for the upcoming event.'
+            });
             alert('RSVP notification sent successfully');
             fetchGuests();
         } catch (error) {

@@ -13,6 +13,7 @@ import img3 from '../assets/img3.jpg';
 import img4 from '../assets/img4.jpg';
 import img5 from '../assets/img5.jpg';
 import img6 from '../assets/img6.jpg';
+import '../assets/fonts.css';
 
 const Home = () => {
   const welcomeText = "Welcome to Planique";
@@ -55,29 +56,29 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black font-['Arial'] overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black font-poppins overflow-x-hidden">
       <header ref={headerRef} className="fixed w-full bg-black/90 backdrop-blur-xl shadow-lg z-50 h-16 border-b border-teal-500/20 transition-all duration-300">
         <div className="container mx-auto h-full px-4">
           <div className="flex items-center justify-between h-full">
             <Link to="/" onClick={scrollToTop} className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-lg flex items-center justify-center">
-                <h1 className="text-lg font-bold text-white">P</h1>
+                <h1 className="text-xl font-bold text-white">P</h1>
               </div>
-              <h1 className="text-lg font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Planique</h1>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Planique</h1>
             </Link>
             <nav className="hidden md:flex items-center space-x-6">
-              <Link to="/" onClick={scrollToTop} className="text-sm text-teal-400 hover:text-teal-400 transition-all duration-300">
+              <Link to="/" onClick={scrollToTop} className="text-base text-teal-400 hover:text-teal-400 transition-all duration-300">
                 Home
               </Link>
-              <Link to="/tutorial" className="text-sm text-teal-400 hover:text-teal-400 transition-all duration-300">
+              <Link to="/tutorial" className="text-base text-teal-400 hover:text-teal-400 transition-all duration-300">
                 Need Ideas?
               </Link>
             </nav>
             <div className="flex items-center space-x-3">
-              <Link to="/login" className="px-4 py-1.5 text-sm text-gray-300 hover:text-teal-400 border border-teal-500/30 rounded-lg hover:border-teal-500 transition-all duration-300">
+              <Link to="/login" className="px-4 py-1.5 text-base text-teal-300 hover:text-teal-400 border border-teal-500/30 rounded-lg hover:border-teal-500 transition-all duration-300">
                 Login
               </Link>
-              <Link to="/register" className="px-4 py-1.5 text-sm bg-gradient-to-br from-teal-500 to-emerald-500 text-white rounded-lg hover:shadow-lg transition-all duration-300">
+              <Link to="/register" className="px-4 py-1.5 text-base bg-gradient-to-br from-teal-500 to-emerald-500 text-white rounded-lg hover:shadow-lg transition-all duration-300">
                 Register
               </Link>
             </div>

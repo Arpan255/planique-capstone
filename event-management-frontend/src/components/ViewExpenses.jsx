@@ -21,16 +21,12 @@ const ViewExpenses = () => {
   
   const { totalBudget } = location.state || {};
   const getVendorName = (vendorId) => {
-    console.log('Looking for vendorId:', vendorId);
-    console.log('Available vendors:', vendors);
     const vendor = vendors.find(v => v.vendorId === vendorId);
-    console.log('Found vendor:', vendor);
     return vendor ? vendor.vendorCompanyName : 'Venue';
   };
 
   useEffect(() => {
     const loadData = async () => {
-      console.log('Loading data for eventId:', eventId);
       await fetchVendors(); // Load vendors first
       await fetchExpenses(); // Then load expenses
     };
@@ -67,52 +63,37 @@ const ViewExpenses = () => {
   };
 
   useEffect(() => {
+    const calculateExpenses = (expensesToFilter) => {
+      const filteredTotal = expensesToFilter.reduce((sum, expense) => sum + parseFloat(expense.totalAmount), 0);
+      setTotalExpensesSum(filteredTotal);
+      
+      const categoryGroups = expensesToFilter.reduce((groups, expense) => {
+        const category = expense.expenseCategory;
+        if (!groups[category]) {
+          groups[category] = 0;
+        }
+        groups[category] += parseFloat(expense.totalAmount);
+        return groups;
+      }, {});
+
+      const categoryData = Object.entries(categoryGroups).map(([name, value]) => ({
+        name,
+        value
+      }));
+
+      setExpensesByCategory(categoryData);
+    };
+
     if (selectedVendorFilter) {
       const filtered = expenses.filter(expense => 
-        getVendorName(expense.vendorId) === selectedVendorFilter
+        getVendorName(expense.vendorId) === selectedVendorFilter || 
+        (selectedVendorFilter === 'Venue' && expense.vendorId === null) // Include expenses related to venue
       );
       setFilteredExpenses(filtered);
-      
-      const filteredTotal = filtered.reduce((sum, expense) => sum + parseFloat(expense.totalAmount), 0);
-      setTotalExpensesSum(filteredTotal);
-      setRemainingBudgetCalc(totalBudget - filteredTotal);
-
-      const categoryGroups = filtered.reduce((groups, expense) => {
-        const category = expense.expenseCategory;
-        if (!groups[category]) {
-          groups[category] = 0;
-        }
-        groups[category] += parseFloat(expense.totalAmount);
-        return groups;
-      }, {});
-
-      const categoryData = Object.entries(categoryGroups).map(([name, value]) => ({
-        name,
-        value
-      }));
-
-      setExpensesByCategory(categoryData);
+      calculateExpenses(filtered);
     } else {
       setFilteredExpenses(expenses);
-      const total = expenses.reduce((sum, expense) => sum + parseFloat(expense.totalAmount), 0);
-      setTotalExpensesSum(total);
-      setRemainingBudgetCalc(totalBudget - total);
-
-      const categoryGroups = expenses.reduce((groups, expense) => {
-        const category = expense.expenseCategory;
-        if (!groups[category]) {
-          groups[category] = 0;
-        }
-        groups[category] += parseFloat(expense.totalAmount);
-        return groups;
-      }, {});
-
-      const categoryData = Object.entries(categoryGroups).map(([name, value]) => ({
-        name,
-        value
-      }));
-
-      setExpensesByCategory(categoryData);
+      calculateExpenses(expenses);
     }
   }, [selectedVendorFilter, expenses, totalBudget]);
 
@@ -121,7 +102,6 @@ const ViewExpenses = () => {
       const response = await fetch(`http://localhost:9094/api/vendors/vendors/${eventId}`);
       if (response.ok) {
         const data = await response.json();
-        console.log('Fetched vendors:', data); // Add this log
         setVendors(data);
       }
     } catch (error) {
@@ -179,11 +159,6 @@ const ViewExpenses = () => {
     }
   };
 
-  // const getVendorName = (vendorId) => {
-  //   const vendor = vendors.find(v => v.vendorId === vendorId);
-  //   return vendor ? vendor.vendorCompanyName : 'N/A';
-  // };
-
   const handleVendorClick = (vendorId) => {
     const vendor = vendors.find(v => v.vendorId === vendorId);
     setSelectedVendor(vendor);
@@ -220,6 +195,15 @@ const ViewExpenses = () => {
                       {vendor.vendorCompanyName}
                     </div>
                   ))}
+                  <div
+                    onClick={() => {
+                      setSelectedVendorFilter('Venue'); // Add Venue option
+                      setShowVendorDropdown(false);
+                    }}
+                    className="px-4 py-2 hover:bg-slate-700 cursor-pointer text-slate-200"
+                  >
+                    Venue
+                  </div>
                   <div
                     onClick={() => {
                       setSelectedVendorFilter('');
@@ -281,7 +265,7 @@ const ViewExpenses = () => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                <Tooltip formatter={(value) => `₹${value}`} />
                 <Legend verticalAlign="bottom" height={36} />
               </PieChart>
             </ResponsiveContainer>
@@ -312,11 +296,8 @@ const ViewExpenses = () => {
                     <td className="py-3 px-4">{new Date(expense.expenseDate).toLocaleDateString()}</td>
                     <td className="py-3 px-4 cursor-pointer hover:text-emerald-400" 
                       onClick={() => handleVendorClick(expense.vendorId)}>
-                    {(() => {
-                      console.log('Rendering vendor name for expense:', expense);
-                      return getVendorName(expense.vendorId);
-                    })()}
-                  </td>
+                    {getVendorName(expense.vendorId)}
+                    </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-3">
                         <button
@@ -415,7 +396,7 @@ const ViewExpenses = () => {
                 <div className="space-y-3">
                   <p className="text-slate-200"><span className="font-semibold">Company:</span> {selectedVendor.vendorCompanyName}</p>
                   <p className="text-slate-200"><span className="font-semibold">Service Type:</span> {selectedVendor.vendorServiceType}</p>
-                  <p className="text-slate-200"><span className="font-semibold">Amount:</span> ${selectedVendor.vendorAmount}</p>
+                  <p className="text-slate-200"><span className="font-semibold">Amount:</span> ₹{selectedVendor.vendorAmount}</p>
                   <p className="text-slate-200"><span className="font-semibold">Payment Status:</span> {selectedVendor.vendorPaymentStatus}</p>
                   <p className="text-slate-200"><span className="font-semibold">Contact:</span> {selectedVendor.vendorName}</p>
                   <p className="text-slate-200"><span className="font-semibold">Email:</span> {selectedVendor.vendorEmail}</p>

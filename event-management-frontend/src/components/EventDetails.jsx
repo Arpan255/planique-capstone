@@ -640,7 +640,7 @@ const EventDetails = () => {
           </div>
           <div>
             <p className="text-slate-400 text-sm">Budget</p>
-            <p className="text-slate-200">${eventDetails.budget}</p>
+            <p className="text-slate-200">₹{eventDetails.budget}</p>
           </div>
           <div>
             <p className="text-slate-400 text-sm">Status</p>
@@ -930,7 +930,7 @@ const EventDetails = () => {
               </div>
 
               <div>
-                <label className="block text-slate-300 text-sm font-semibold mb-1">Cost ($)*</label>
+                <label className="block text-slate-300 text-sm font-semibold mb-1">Cost</label>
                 <input
                   type="number"
                   name="cost"
@@ -1015,7 +1015,7 @@ const EventDetails = () => {
           />
         </div>
         <div>
-          <label className="block text-slate-300 text-sm font-semibold mb-2">Amount ($)*</label>
+          <label className="block text-slate-300 text-sm font-semibold mb-2">Amount</label>
           <input
             type="number"
             name="totalAmount"
